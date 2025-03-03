@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function SignupForm() {
+export default function RegisterForm() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -12,32 +12,57 @@ export default function SignupForm() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form Data:", formData);
+
+    if (formData.password.length < 6) {
+      alert("Mật khẩu phải có ít nhất 6 ký tự.");
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      alert("Mật khẩu nhập lại không khớp.");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:5000/api/users/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Đăng ký thành công!");
+        window.location.href = "/login"; // Chuyển về trang đăng nhập
+      } else {
+        alert(data.message || "Đăng ký thất bại.");
+      }
+    } catch (err) {
+      console.error("Lỗi:", err);
+      alert("Đã xảy ra lỗi khi kết nối với server.");
+    }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-black">
       <div className="bg-white p-8 rounded-lg shadow-md w-96">
-        <div className="flex justify-center mb-4">
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/6/69/IMDB_Logo_2016.svg"
-            alt="IMDb Logo"
-            className="w-16"
-          />
-        </div>
         <h2 className="text-2xl font-bold text-center mb-6">Đăng ký</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">Họ tên</label>
             <input
               type="text"
-              name="Họ tên"
+              name="name"
               value={formData.name}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500"
-              placeholder="Họ tên"
               required
             />
           </div>
@@ -56,20 +81,18 @@ export default function SignupForm() {
             <label className="block text-sm font-medium text-gray-700">Mật khẩu</label>
             <input
               type="password"
-              name="Mật khẩu"
+              name="password"
               value={formData.password}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500"
-              placeholder="Tối thiểu 6 ký tự"
               required
             />
-            <p className="text-xs text-gray-500 mt-1">Mật khẩu có ít nhất 6 ký tự</p>
           </div>
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">Nhập lại mật khẩu</label>
             <input
               type="password"
-              name="Nhập lại mật khẩu"
+              name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-yellow-500"
@@ -83,9 +106,6 @@ export default function SignupForm() {
             Tạo tài khoản IMDb
           </button>
         </form>
-        <p className="text-sm text-center mt-4">
-          Bạn đã có tài khoản? <a href="/login" className="text-blue-500">Đăng nhập</a>
-        </p>
       </div>
     </div>
   );

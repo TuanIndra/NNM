@@ -15,7 +15,7 @@ const AdminHeader = () => {
         if (location.pathname.includes("/admin/users")) return "Quản lý Người dùng";
         if (location.pathname.includes("/admin/reviews")) return "Quản lý Đánh giá";
         if (location.pathname.includes("/admin/stats")) return "Thống kê";
-        return "Admin Dashboard"; // Mặc định
+        return "Admin Dashboard";
     };
 
     return (
