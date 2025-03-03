@@ -26,10 +26,8 @@ const movieRoutes = require('./routes/movieRoutes');
 const userRoutes = require('./routes/userRoutes');
 const searchRoutes = require("./routes/searchRoutes");
 const watchlistRoutes = require("./routes/watchlistRoutes");
-const adminUserRoutes = require("./routes/adminUserRoutes");
 
 app.use('/api/movies', movieRoutes);
 app.use('/api/users', userRoutes);
 app.use("/api/search", searchRoutes);
 app.use("/api/watchlist", watchlistRoutes);
-app.use("/api/admin/users", adminUserRoutes);
