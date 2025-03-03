@@ -13,10 +13,10 @@ import WatchlistPage from "./components/Watchlist/watchlistPage";
 import CreateWatchlistPage from "./components/Watchlist/createWatchlist";
 
 const PrivateRoute = ({ children }) => {
-  const user = JSON.parse(localStorage.getItem("user")); // Lấy user từ localStorage
+  const user = JSON.parse(localStorage.getItem("user")); 
 
   if (!user || user.role !== "admin") {
-    return <Navigate to="/home" />; // Nếu không phải admin, chuyển về home
+    return <Navigate to="/home" />;
   }
 
   return children;

@@ -34,7 +34,7 @@ const SearchBar = () => {
           </button>
           {menuOpen && (
             <div className="absolute right-0 mt-2 bg-white text-black p-2 rounded-lg shadow-md">
-              <button onClick={handleLogout} className="block w-full text-left px-4 py-2 hover:bg-gray-100">
+              <button onClick={handleLogout} className="block w-full text-left px-8 py-2 hover:bg-gray-100">
                 Đăng xuất
               </button>
             </div>
