@@ -81,12 +81,7 @@ const Navbar = () => {
 
             <div className="ml-10 flex items-center md:ml-6">
               <SearchBar></SearchBar>
-              <a href="#" className="ml-3  px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700 hover:text-white">
-                Danh sách xem
-              </a>
-              <a href="#" className="ml-3 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700 hover:text-white">
-                Đăng nhập
-              </a>
+             
             </div>
 
 

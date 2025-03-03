@@ -5,7 +5,7 @@ import MainPage from './mainPage'
 
 const homePage = () => {
   return (
-    <div>
+    <div className='bg-black'>
       <Navbar></Navbar>
       <MainPage></MainPage>
     </div>
