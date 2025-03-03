@@ -1,31 +1,57 @@
-const Movie = require('../models/Movie'); // Import model
+const Movie = require('../models/Movie');
 
-// API lấy danh sách phim
-const getMovies = async (req, res) => {
+//lấy danh sách trailer phim
+exports.getMovies = async (req, res) => {
     try {
-        console.log("Lấy danh sách phim...");
-        const movies = await Movie.find(); // Lấy tất cả phim từ database
-        res.json(movies); 
-    } catch (error) {
-        console.error("Lỗi khi lấy phim:", error);
-        res.status(500).json({ message: 'Lỗi server' });
+        const movies = await Movie.find().select("title poster actors genre ratings");
+        res.json(movies);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
     }
 };
 
-// API tạo phim mới
-const createMovie = async (req, res) => {
+//lấy tên phim theo id
+exports.getMovieById = async (req, res) => {
     try {
-        console.log("Dữ liệu nhận được:", req.body); // Log dữ liệu gửi lên
-
-        const newMovie = new Movie(req.body); // Tạo phim mới từ dữ liệu nhận được
-        await newMovie.save(); // Lưu vào database
-
-        console.log("Phim đã lưu vào DB:", newMovie);
-        res.status(201).json({ message: 'Movie created', data: newMovie });
-    } catch (error) {
-        console.error("Lỗi khi tạo phim:", error);
-        res.status(400).json({ message: 'Lỗi khi tạo phim' });
+        const movie = await Movie.findById(req.params.id);
+        res.json(movie);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
     }
 };
 
-module.exports = { getMovies, createMovie };
+//thêm phim mới
+exports.addMovie = async (req, res) => {
+    try {
+        console.log("Request body:", req.body);
+        const movie = new Movie(req.body);
+        const savedMovie = await movie.save();
+        res.status(201).json(savedMovie);
+    } catch (err) {
+        console.error("Error adding movie:", err);
+        res.status(400).json({ message: err.message });
+    }
+};
+
+// Tìm kiếm phim: Cho phép người dùng tìm kiếm phim theo tiêu đề, thể loại, diễn viên
+exports.searchMovies = async (req, res) => {
+    try {
+        const { query } = req.query;
+
+        if (!query) {
+            return res.status(400).json({ message: "Vui lòng nhập từ khóa tìm kiếm." });
+        }
+
+        const movies = await Movie.find({
+            $or: [
+                { title: { $regex: query, $options: "i" } },
+                { genre: { $regex: query, $options: "i" } },
+                { actors: { $regex: query, $options: "i" } }
+            ]
+        }).select("title poster actors genre ratings");
+
+        res.json(movies);
+    } catch (err) {
+        res.status(500).json({ message: err.message });
+    }
+};
