@@ -22,13 +22,11 @@ const Navbar = () => {
             </a>
             <div className="hidden md:block">
               <div className="ml-10 flex items-baseline space-x-4">
-              <CiMenuBurger />
                 <a
                   href="#"
-                  className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700 hover:text-white"
-                  
+                  className="flex px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700 hover:text-white"
                 >
-                  Menu
+                  <CiMenuBurger className="text-white mr-2 h-4.5 w-4.5" /> Menu
                 </a>
                 <div className="relative">
                   <button
@@ -79,8 +77,20 @@ const Navbar = () => {
               </div>
             </div>
           </div>
-          <div className="hidden md:block">
-                  <SearchBar></SearchBar>
+          <div className="hidden md:block ">
+
+            <div className="ml-10 flex items-center md:ml-6">
+              <SearchBar></SearchBar>
+              <a href="#" className="ml-3  px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700 hover:text-white">
+                Danh sách xem
+              </a>
+              <a href="#" className="ml-3 px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700 hover:text-white">
+                Đăng nhập
+              </a>
+            </div>
+
+
+
           </div>
           <div className="-mr-2 flex md:hidden">
             <button

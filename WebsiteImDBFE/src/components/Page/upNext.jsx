@@ -1,6 +1,6 @@
 import React from 'react';
 import { PlayCircle, ThumbsUp, Heart } from 'lucide-react';
-
+import { MdOutlineNavigateNext } from "react-icons/md";
 const upNextVideos = [
     {
         thumbnail: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR7e-ltIVeMwAGbE2MnOymabGB2oO8TV7O15Q&s',
@@ -30,7 +30,7 @@ const upNextVideos = [
 
 const UpNext = () => {
     return (
-        <div className="bg-black text-white p-4 rounded-lg w-120 h-[450px]">
+        <div className="bg-gray-900 text-white p-4 rounded-lg w-120 h-[500px]">
             <h2 className="text-lg font-bold mb-4 text-blue-500">Up next</h2>
             <div className="space-y-4">
                 {upNextVideos.map((video, index) => (
@@ -66,7 +66,12 @@ const UpNext = () => {
                         </div>
                     </div>
                 ))}
+                <a href='#' className='text-white flex items-center left-2 bottom-0 hover:text-orange-300 cursor-pointer text-xl font-bold'>
+                    Xem thêm
+                    <MdOutlineNavigateNext></MdOutlineNavigateNext>
+                </a>
             </div>
+
         </div>
     );
 };
