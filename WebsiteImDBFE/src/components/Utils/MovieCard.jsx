@@ -14,8 +14,8 @@ const MovieCard = ({ movie }) => {
                     + Watchlist
                 </button>
                 <button className=" text-white text-sm w-full mt-2 py-1 rounded flex items-center justify-center">
-                <FaPlay className="mr-2" />
-                Trailer
+                    <FaPlay className="mr-2" />
+                    Trailer
                 </button>
             </div>
         </div>
