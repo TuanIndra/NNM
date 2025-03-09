@@ -11,6 +11,8 @@ import SignupForm from "./components/Login/registerPage";
 import LoginPage from "./components/Login/loginPage";
 import WatchlistPage from "./components/Watchlist/watchlistPage";
 import CreateWatchlistPage from "./components/Watchlist/createWatchlist";
+import WatchlistMoviesPage from "./components/Watchlist/WatchlistMoviesPage";
+import RequireLogin from './components/Page/RequireLogin';
 
 const PrivateRoute = ({ children }) => {
   const user = JSON.parse(localStorage.getItem("user")); 
@@ -31,7 +33,9 @@ const App = () => {
         <Route path="/register" element={<SignupForm />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/watchlist" element={<WatchlistPage />} />
+        <Route path="/require-login" element={<RequireLogin />} />
         <Route path="/create-watchlist" element={<CreateWatchlistPage />} />
+        <Route path="/watchlist/:id" element={<WatchlistMoviesPage />} />
       
         <Route
           path="admin/*"
