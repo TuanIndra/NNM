@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const SearchBar = () => {
   const [user, setUser] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate(); // Hook để điều hướng
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -22,10 +24,22 @@ const SearchBar = () => {
     window.location.reload();
   };
 
+  const handleWatchlistClick = () => {
+    if (!user) {
+      navigate("/require-login"); // Chuyển hướng nếu chưa đăng nhập
+    } else {
+      navigate("/watchlist");
+    }
+  };
+
   return (
     <div className="ml-10 flex items-center">
       <input type="text" placeholder="Tìm kiếm" className="bg-gray-700 text-white px-4 py-2 rounded-md" />
-      <a href="/watchlist" className="ml-3 text-sm font-medium hover:bg-gray-700 px-3 py-2 rounded-md">Danh sách xem</a>
+      
+      {/* Điều hướng đến Watchlist */}
+      <button onClick={handleWatchlistClick} className="ml-3 text-sm font-medium hover:bg-gray-700 px-3 py-2 rounded-md">
+        Danh sách xem
+      </button>
 
       {user ? (
         <div className="relative ml-3">
@@ -41,7 +55,9 @@ const SearchBar = () => {
           )}
         </div>
       ) : (
-        <a href="/login" className="ml-3 text-sm font-medium hover:bg-gray-700 px-3 py-2 rounded-md">Đăng nhập</a>
+        <button onClick={() => navigate("/require-login")} className="ml-3 text-sm font-medium hover:bg-gray-700 px-3 py-2 rounded-md">
+          Đăng nhập
+        </button>
       )}
     </div>
   );
