@@ -13,7 +13,8 @@ import WatchlistPage from "./components/Watchlist/watchlistPage";
 import CreateWatchlistPage from "./components/Watchlist/createWatchlist";
 import WatchlistMoviesPage from "./components/Watchlist/WatchlistMoviesPage";
 import RequireLogin from './components/Page/RequireLogin';
-
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const PrivateRoute = ({ children }) => {
   const user = JSON.parse(localStorage.getItem("user")); 
 
@@ -27,6 +28,15 @@ const PrivateRoute = ({ children }) => {
 const App = () => {
   return (
     <Router>
+      <ToastContainer 
+        position="top-center" 
+        autoClose={1000} 
+        hideProgressBar={false} 
+        newestOnTop={false} 
+        closeOnClick 
+        pauseOnHover 
+        draggable 
+      />
       <Routes>
         <Route path='/' element={<Navigate to='/home' />} />
         <Route path="/home" element={<HomePage />} />

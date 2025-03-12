@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Navbar from '../Navbar/Navbar'
+import { toast } from "react-toastify";
 const LoginPage = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -31,17 +32,16 @@ const LoginPage = () => {
         throw new Error(data.message || "Đăng nhập thất bại.");
       }
   
-      // Lưu user vào localStorage
       localStorage.setItem("user", JSON.stringify(data.user));
       localStorage.setItem("token", data.token);
   
-      alert("Đăng nhập thành công!");
+      toast.success("Đăng nhập thành công!", { position: "top-center" });
+
   
-      // Kiểm tra role để điều hướng
       if (data.user.role === "admin") {
-        window.location.href = "/admin"; // Chuyển hướng admin
+        window.location.href = "/admin";
       } else {
-        window.location.href = "/home";  // Chuyển hướng user
+        window.location.href = "/home"; 
       }
     } catch (err) {
       setError(err.message);
