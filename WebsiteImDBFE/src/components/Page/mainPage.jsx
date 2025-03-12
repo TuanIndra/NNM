@@ -66,29 +66,7 @@ const MainPage = () => {
         <a className='text-xl font-bold text-white'>Top diễn viên nổi tiếng</a>
         <Slider></Slider>
       </div>
-
-<<<<<<< HEAD
-      <div className='text-white mt-20'>
-      <a className='text-xl font-bold text-white '>  Top diễn viên nối tiếng</a>
-        <FeatureNew/>
-      </div>
-      <div className='text-white mt-20'>
-      <a className='text-xl font-bold text-white '>  Top diễn viên nối tiếng</a>
-        <FeaturedVideos/>
-      </div>
-      <div className='text-white mt-20'>
-      <a className='text-xl font-bold text-white '>  Top diễn viên nối tiếng</a>
-        <MovieSlider movies={moviesData} />
-      </div>
-      <div className='text-white mt-20'>
-      <a className='text-xl font-bold text-white '>  Top diễn viên nối tiếng</a>
-        <MovieSlider movies={moviesData} />
-      </div>
-      <div className='mt-5'>
         <Footer></Footer>
-      </div>
-
-=======
       {loading ? (
         <p className="text-white">Đang tải phim...</p>
       ) : error ? (
@@ -109,7 +87,6 @@ const MainPage = () => {
           </div>
         </>
       )}
->>>>>>> e72b1be6ac27f9c25d7bec9d30295b2ec5818dae
     </div>
   );
 };
