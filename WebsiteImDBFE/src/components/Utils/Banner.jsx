@@ -1,7 +1,6 @@
 import React from 'react'
 import Banner2 from '../../assets/banner2.png'
 import Main from '../../assets/main.jpg';
-import { PlayCircle, ThumbsUp, Heart } from 'lucide-react';
 import { FaRegPlayCircle } from "react-icons/fa";
 const Banner = () => {
     return (

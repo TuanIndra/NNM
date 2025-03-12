@@ -1,8 +1,10 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom"; // Thêm useLocation
 
 const RequireLogin = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // Lấy thông tin location
+  const from = location.state?.from || "/home"; // Mặc định là /home nếu không có from
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white">
