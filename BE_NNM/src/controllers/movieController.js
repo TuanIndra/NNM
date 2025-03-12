@@ -1,7 +1,7 @@
 const Movie = require('../models/Movie');
 exports.getMovies = async (req, res) => {
     try {
-        const movies = await Movie.find().select("title poster actors genre releaseYear ratings");
+        const movies = await Movie.find().select("title poster actors genre releaseYear ratings director description");
         res.json(movies);
     } catch (err) {
         res.status(500).json({ message: err.message });

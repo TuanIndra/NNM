@@ -9,7 +9,7 @@ const ManageMovies = () => {
     const [showModal, setShowModal] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [selectedMovie, setSelectedMovie] = useState(null);
-    
+    const [searchTerm, setSearchTerm] = useState("");
     const [movieData, setMovieData] = useState({
         title: "",
         description: "",
@@ -36,6 +36,20 @@ const ManageMovies = () => {
             setLoading(false);
         }
     };
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
+    const filteredMovies = movies.filter((movie) => {
+        return (
+            movie?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            movie?.director?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            movie?.genre?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (Array.isArray(movie.actors) && 
+                movie.actors.some(actor => actor?.toLowerCase().includes(searchTerm.toLowerCase())))
+        );
+    });
+    
+    
 
     const openAddModal = () => {
         setEditMode(false);
@@ -132,7 +146,13 @@ const ManageMovies = () => {
             <button onClick={openAddModal} className="bg-green-500 text-white px-4 py-2 mb-4 rounded">
                 Thêm Phim
             </button>
-
+            <input
+                type="text"
+                placeholder="Tìm kiếm phim theo tên, đạo diễn, diễn viên..."
+                value={searchTerm}
+                onChange={handleSearchChange}
+                className="border p-2 rounded w-full mb-4"
+            />
             {loading ? (
                 <p>Đang tải dữ liệu...</p>
             ) : (
@@ -144,16 +164,18 @@ const ManageMovies = () => {
                         <th className="p-3 text-center">Năm</th>
                         <th className="p-3 text-center">Thể loại</th>
                         <th className="p-3 text-center">Diễn viên</th>
+                        <th className="p-3 text-center">Đạo diễn</th>
                         <th className="p-3 text-center">Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {movies.map(movie => (
+                    {filteredMovies.map(movie => (
                         <tr key={movie._id} className="border-b text-center">
                             <td className="p-3">{movie.title}</td>
                             <td className="p-3">{movie.releaseYear}</td>
                             <td className="p-3">{movie.genre}</td>
                             <td className="p-3">{movie.actors.join(", ")}</td>
+                            <td className="p-3">{movie.director || "Không rõ"}</td>
                             <td className="p-3 flex justify-center">
                                 <button onClick={() => openEditModal(movie)} className="bg-blue-500 text-white px-3 py-1 rounded mr-2">
                                     Sửa
@@ -165,6 +187,7 @@ const ManageMovies = () => {
                         </tr>
                     ))}
                 </tbody>
+
             </table>
 
             )}
