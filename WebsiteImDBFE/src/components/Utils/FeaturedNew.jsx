@@ -63,4 +63,4 @@ const FeatureNew = () => {
     );
 };
 
-export default FeatureNew;
+export default FeaturedNew;

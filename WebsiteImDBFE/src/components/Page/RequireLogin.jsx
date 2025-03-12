@@ -22,6 +22,6 @@ const RequireLogin = () => {
     </div>
     
   );
-};
+};0
 
 export default RequireLogin;
