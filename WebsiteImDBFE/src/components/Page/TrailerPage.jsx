@@ -19,15 +19,15 @@ const TrailerPage = () => {
 
     return (
         <div className="bg-black min-h-screen">
-            <Navbar />
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-4">
+            <Navbar/>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-14">
                 {/* Wrapper chứa Video + Sidebar */}
                 <div className="flex space-x-6">
                     {/* Video Player */}
                     <div className="flex flex-col w-[70%]">
                         <button
                             onClick={() => navigate(-1)}
-                            className="text-lg font-semibold text-white mb-4  px-4 py-2 rounded-md w-fit"
+                            className="text-lg font-semibold text-white mb-4  px-4 py-2 rounded-md w-fit mt-2 transition-all duration-300 hover:bg-[#121212]"
                         >
                             Quay lại
                         </button>

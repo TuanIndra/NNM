@@ -25,7 +25,7 @@ const featuredItems = [
     }
 ];
 
-const FeatureNew = () => {
+const FeaturedNew = () => {
     return (
         <div className="w-full bg-black text-white p-5">
             {/* Tiêu đề */}

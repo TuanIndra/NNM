@@ -7,6 +7,7 @@ import MovieSlider from '../Utils/MovieSlider';
 import FeatureNew from '../Utils/FeaturedNew';
 import FeaturedVideos from '../Utils/FeaturedVideo';
 import Footer from '../Page/Footer';
+import Navbar from '../Navbar/Navbar';
 
 const MainPage = () => {
   const [movies, setMovies] = useState([]);
@@ -26,8 +27,8 @@ const MainPage = () => {
         const formattedMovies = data.map(movie => ({
           title: movie.title,
           image: movie.poster, // poster từ API
-          rating: movie.ratings.length > 0 
-            ? (movie.ratings.reduce((sum, r) => sum + r.rating, 0) / movie.ratings.length).toFixed(1) 
+          rating: movie.ratings.length > 0
+            ? (movie.ratings.reduce((sum, r) => sum + r.rating, 0) / movie.ratings.length).toFixed(1)
             : 0, // Tính trung bình rating nếu có
         }));
         setMovies(formattedMovies);
@@ -42,52 +43,56 @@ const MainPage = () => {
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <a href='#' className='bg-blue-500 rounded-lg shadow-md transition duration-300 hover:shadow-2xl hover:scale-105 cursor-pointer'>
-        <div className="flex items-start space-x-6 relative">
-          <Banner></Banner>
-          <div className="w-[40%] px-8">
-            <UpNext />
+    <div>
+      <Navbar></Navbar>
+      <div className=" relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 z-0 mt-14">
+        <a href='/trailer' className='bg-blue-500 rounded-lg shadow-md transition duration-300 hover:shadow-2xl hover:scale-105 cursor-pointer'>
+          <div className="flex items-start space-x-6 relative">
+            <Banner></Banner>
+            <div className="w-[40%] px-8">
+              <UpNext />
+            </div>
           </div>
+        </a>
+
+        {/* Thêm FeaturedNew */}
+        <div className='mt-20'>
+          <FeatureNew />
         </div>
-      </a>
 
-      {/* Thêm FeaturedNew */}
-      <div className='mt-20'>
-        <FeatureNew />
-      </div>
+        {/* Thêm FeaturedVideos */}
+        <div className='mt-20'>
+          <FeaturedVideos />
+        </div>
 
-      {/* Thêm FeaturedVideos */}
-      <div className='mt-20'>
-        <FeaturedVideos />
-      </div>
-
-      <div className='mt-20'>
-        <a className='text-xl font-bold text-white'>Top diễn viên nổi tiếng</a>
-        <Slider></Slider>
-      </div>
+        <div className='mt-20'>
+          <a className='text-xl font-bold text-white'>Top diễn viên nổi tiếng</a>
+          <Slider></Slider>
+        </div>
         <Footer></Footer>
-      {loading ? (
-        <p className="text-white">Đang tải phim...</p>
-      ) : error ? (
-        <p className="text-red-500">{error}</p>
-      ) : (
-        <>
-          <div className='text-white mt-20'>
-            <a className='text-xl font-bold text-white'>Phim nổi bật</a>
-            <MovieSlider movies={movies} />
-          </div>
-          <div className='text-white mt-20'>
-            <a className='text-xl font-bold text-white'>Phim mới</a>
-            <MovieSlider movies={movies} />
-          </div>
-          <div className='text-white mt-20'>
-            <a className='text-xl font-bold text-white'>Phim được yêu thích</a>
-            <MovieSlider movies={movies} />
-          </div>
-        </>
-      )}
+        {loading ? (
+          <p className="text-white">Đang tải phim...</p>
+        ) : error ? (
+          <p className="text-red-500">{error}</p>
+        ) : (
+          <>
+            <div className='text-white mt-20'>
+              <a className='text-xl font-bold text-white'>Phim nổi bật</a>
+              <MovieSlider movies={movies} />
+            </div>
+            <div className='text-white mt-20'>
+              <a className='text-xl font-bold text-white'>Phim mới</a>
+              <MovieSlider movies={movies} />
+            </div>
+            <div className='text-white mt-20'>
+              <a className='text-xl font-bold text-white'>Phim được yêu thích</a>
+              <MovieSlider movies={movies} />
+            </div>
+          </>
+        )}
+      </div>
     </div>
+
   );
 };
 
