@@ -65,32 +65,37 @@ const MainPage = () => {
           <FeaturedVideos />
         </div>
 
-        <div className='mt-20'>
-          <a className='text-xl font-bold text-white'>Top diễn viên nổi tiếng</a>
-          <Slider></Slider>
-        </div>
-        <Footer></Footer>
-        {loading ? (
-          <p className="text-white">Đang tải phim...</p>
-        ) : error ? (
-          <p className="text-red-500">{error}</p>
-        ) : (
-          <>
-            <div className='text-white mt-20'>
-              <a className='text-xl font-bold text-white'>Phim nổi bật</a>
-              <MovieSlider movies={movies} />
-            </div>
-            <div className='text-white mt-20'>
-              <a className='text-xl font-bold text-white'>Phim mới</a>
-              <MovieSlider movies={movies} />
-            </div>
-            <div className='text-white mt-20'>
-              <a className='text-xl font-bold text-white'>Phim được yêu thích</a>
-              <MovieSlider movies={movies} />
-            </div>
-          </>
-        )}
+      {/* Thêm FeaturedVideos */}
+      <div className='mt-20'>
+        <FeaturedVideos />
       </div>
+
+      <div className='mt-20'>
+        <a className='text-xl font-bold text-white'>Top diễn viên nổi tiếng</a>
+        <Slider></Slider>
+      </div>
+      {loading ? (
+        <p className="text-white">Đang tải phim...</p>
+      ) : error ? (
+        <p className="text-red-500">{error}</p>
+      ) : (
+        <>
+          <div className='text-white mt-20'>
+            <a className='text-xl font-bold text-white'>Phim nổi bật</a>
+            <MovieSlider movies={movies} />
+          </div>
+          <div className='text-white mt-20'>
+            <a className='text-xl font-bold text-white'>Phim mới</a>
+            <MovieSlider movies={movies} />
+          </div>
+          <div className='text-white mt-20'>
+            <a className='text-xl font-bold text-white'>Phim được yêu thích</a>
+            <MovieSlider movies={movies} />
+          </div>
+        </>
+      )}
+      <Footer></Footer>
+    </div>
     </div>
 
   );
