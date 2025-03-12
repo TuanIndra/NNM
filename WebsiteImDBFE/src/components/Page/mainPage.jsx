@@ -7,6 +7,7 @@ import MovieSlider from '../Utils/MovieSlider';
 import FeatureNew from '../Utils/FeaturedNew';
 import FeaturedVideos from '../Utils/FeaturedVideo';
 import Footer from '../Page/Footer';
+import Navbar from '../Navbar/Navbar';
 
 const MainPage = () => {
   const [movies, setMovies] = useState([]);
@@ -43,20 +44,27 @@ const MainPage = () => {
   }, []);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <a href='/trailer' className='bg-blue-500 rounded-lg shadow-md transition duration-300 hover:shadow-2xl hover:scale-105 cursor-pointer'>
-        <div className="flex items-start space-x-6 relative">
-          <Banner></Banner>
-          <div className="w-[40%] px-8">
-            <UpNext />
+    <div>
+      <Navbar></Navbar>
+      <div className=" relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 z-0 mt-14">
+        <a href='/trailer' className='bg-blue-500 rounded-lg shadow-md transition duration-300 hover:shadow-2xl hover:scale-105 cursor-pointer'>
+          <div className="flex items-start space-x-6 relative">
+            <Banner></Banner>
+            <div className="w-[40%] px-8">
+              <UpNext />
+            </div>
           </div>
-        </div>
-      </a>
+        </a>
 
-      {/* Thêm FeaturedNew */}
-      <div className='mt-20'>
-        <FeatureNew />
-      </div>
+        {/* Thêm FeaturedNew */}
+        <div className='mt-20'>
+          <FeatureNew />
+        </div>
+
+        {/* Thêm FeaturedVideos */}
+        <div className='mt-20'>
+          <FeaturedVideos />
+        </div>
 
       {/* Thêm FeaturedVideos */}
       <div className='mt-20'>
@@ -89,6 +97,8 @@ const MainPage = () => {
       )}
       <Footer></Footer>
     </div>
+    </div>
+
   );
 };
 
