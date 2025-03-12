@@ -9,7 +9,9 @@ const ManageUsers = () => {
     const [showModal, setShowModal] = useState(false);
     const [editMode, setEditMode] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
-    const [searchTerm, setSearchTerm] = useState(""); // 🔍 Tìm kiếm
+    const [searchTerm, setSearchTerm] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 7;
 
     const [userData, setUserData] = useState({
         name: "",
@@ -119,6 +121,20 @@ const ManageUsers = () => {
         user.email.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
+    // Phân trang
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+    const currentUsers = filteredUsers.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+
+    const handleNextPage = () => {
+        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    };
+
+    const handlePrevPage = () => {
+        if (currentPage > 1) setCurrentPage(currentPage - 1);
+    };
+
     return (
         <div className="p-4">
             <button onClick={openAddModal} className="bg-green-500 text-white px-4 py-2 mb-4 rounded">
@@ -130,40 +146,66 @@ const ManageUsers = () => {
                 type="text"
                 placeholder="Tìm kiếm người dùng..."
                 value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                onChange={(e) => {
+                    setSearchTerm(e.target.value);
+                    setCurrentPage(1); // Reset về trang đầu tiên khi tìm kiếm
+                }}
                 className="border p-2 rounded w-full mb-4"
             />
 
             {loading ? (
                 <p>Đang tải dữ liệu...</p>
             ) : (
-                <table className="w-full bg-white shadow-md rounded">
-                    <thead>
-                        <tr className="bg-gray-200">
-                            <th className="p-3 text-center">Họ Tên</th>
-                            <th className="p-3 text-center">Email</th>
-                            <th className="p-3 text-center">Vai Trò</th>
-                            <th className="p-3 text-center">Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filteredUsers.map(user => (
-                            <tr key={user._id} className="border-b text-center">
-                                <td className="p-3">{user.name}</td>
-                                <td className="p-3">{user.email}</td>
-                                <td className="p-3">{user.role}</td>
-                                <td className="p-3 flex justify-center">
-                                    <button onClick={() => openEditModal(user)} className="bg-blue-500 text-white px-3 py-1 rounded mr-2">
-                                        Sửa
-                                    </button>
-                                    <button onClick={() => handleDeleteUser(user._id)} className="bg-red-500 text-white px-3 py-1 rounded">
-                                        Xóa
-                                    </button>
-                                </td>
+                <>
+                    <table className="w-full bg-white shadow-md rounded">
+                        <thead>
+                            <tr className="bg-gray-200">
+                                <th className="p-3 text-center">Họ Tên</th>
+                                <th className="p-3 text-center">Email</th>
+                                <th className="p-3 text-center">Vai Trò</th>
+                                <th className="p-3 text-center">Hành động</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {currentUsers.map(user => (
+                                <tr key={user._id} className="border-b text-center">
+                                    <td className="p-3">{user.name}</td>
+                                    <td className="p-3">{user.email}</td>
+                                    <td className="p-3">{user.role}</td>
+                                    <td className="p-3 flex justify-center">
+                                        <button onClick={() => openEditModal(user)} className="bg-blue-500 text-white px-3 py-1 rounded mr-2">
+                                            Sửa
+                                        </button>
+                                        <button onClick={() => handleDeleteUser(user._id)} className="bg-red-500 text-white px-3 py-1 rounded">
+                                            Xóa
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+
+                    {/* Phân trang */}
+                    <div className="flex justify-between items-center mt-4">
+                        <button 
+                            onClick={handlePrevPage} 
+                            disabled={currentPage === 1}
+                            className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-300"
+                        >
+                            Trang trước
+                        </button>
+                        <span>
+                            Trang {currentPage} / {totalPages}
+                        </span>
+                        <button 
+                            onClick={handleNextPage} 
+                            disabled={currentPage === totalPages}
+                            className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-300"
+                        >
+                            Trang sau
+                        </button>
+                    </div>
+                </>
             )}
 
             {showModal && (
