@@ -65,7 +65,6 @@ exports.removeMovieFromWatchlist = async (req, res) => {
     }
 };
 
-
 // Lấy danh sách Watchlist
 exports.getUserWatchlists = async (req, res) => {
     try {
@@ -117,4 +116,3 @@ exports.deleteWatchlist = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
-

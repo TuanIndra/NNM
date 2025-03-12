@@ -1,9 +1,15 @@
 import React from "react";
+<<<<<<< HEAD
 import { useNavigate } from "react-router-dom";
 import Navbar from "../Navbar/Navbar";
+=======
+import { useNavigate, useLocation } from "react-router-dom"; // Thêm useLocation
+>>>>>>> e72b1be6ac27f9c25d7bec9d30295b2ec5818dae
 
 const RequireLogin = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // Lấy thông tin location
+  const from = location.state?.from || "/home"; // Mặc định là /home nếu không có from
 
   return (
     <div>
