@@ -3,12 +3,35 @@ import React, { useState } from 'react';
 const CreateWatchlist = () => {
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
+  const token = localStorage.getItem("token"); // Lấy token từ localStorage
 
-  const handleCreate = () => {
-    // Xử lý logic tạo watchlist ở đây (có thể gọi API để lưu vào database)
-    alert(`Watchlist "${name}" đã được tạo!`);
-    setName('');
-    setDescription('');
+  const handleCreate = async () => {
+    if (!name) {
+      alert("Tên danh sách không được để trống!");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:5000/api/watchlist/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ name, description })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert(`Watchlist "${name}" đã được tạo!`);
+        setName('');
+        setDescription('');
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      alert("Lỗi kết nối server!");
+    }
   };
 
   return (

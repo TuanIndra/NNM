@@ -11,12 +11,15 @@ import SignupForm from "./components/Login/registerPage";
 import LoginPage from "./components/Login/loginPage";
 import WatchlistPage from "./components/Watchlist/watchlistPage";
 import CreateWatchlistPage from "./components/Watchlist/createWatchlist";
+import WatchlistMoviesPage from "./components/Watchlist/WatchlistMoviesPage";
+import RequireLogin from './components/Page/RequireLogin';
+import TrailerPage from './components/Page/TrailerPage';
 
 const PrivateRoute = ({ children }) => {
-  const user = JSON.parse(localStorage.getItem("user")); // Lấy user từ localStorage
+  const user = JSON.parse(localStorage.getItem("user")); 
 
   if (!user || user.role !== "admin") {
-    return <Navigate to="/home" />; // Nếu không phải admin, chuyển về home
+    return <Navigate to="/home" />;
   }
 
   return children;
@@ -31,8 +34,10 @@ const App = () => {
         <Route path="/register" element={<SignupForm />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/watchlist" element={<WatchlistPage />} />
+        <Route path="/require-login" element={<RequireLogin />} />
         <Route path="/create-watchlist" element={<CreateWatchlistPage />} />
-      
+        <Route path="/watchlist/:id" element={<WatchlistMoviesPage />} />
+        <Route path="/trailer" element={<TrailerPage/>}></Route>
         <Route
           path="admin/*"
           element={
