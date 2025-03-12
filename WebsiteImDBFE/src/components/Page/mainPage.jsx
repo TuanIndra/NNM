@@ -18,18 +18,19 @@ const MainPage = () => {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/movies'); // URL API
+        const response = await fetch('http://localhost:5000/api/movies');
         if (!response.ok) {
           throw new Error('Không thể tải danh sách phim');
         }
         const data = await response.json();
-        // Chuẩn hóa dữ liệu từ API để khớp với MovieCard
+        console.log('Dữ liệu phim từ API:', data); // Debug
         const formattedMovies = data.map(movie => ({
+          _id: movie._id, // Đảm bảo có _id
           title: movie.title,
-          image: movie.poster, // poster từ API
-          rating: movie.ratings.length > 0
-            ? (movie.ratings.reduce((sum, r) => sum + r.rating, 0) / movie.ratings.length).toFixed(1)
-            : 0, // Tính trung bình rating nếu có
+          image: movie.poster,
+          rating: movie.ratings.length > 0 
+            ? (movie.ratings.reduce((sum, r) => sum + r.rating, 0) / movie.ratings.length).toFixed(1) 
+            : 0,
         }));
         setMovies(formattedMovies);
       } catch (err) {
