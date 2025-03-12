@@ -43,6 +43,11 @@ const MovieCard = ({ movie }) => {
 
   // Xử lý khi nhấn nút "+ Watchlist"
   const handleWatchlistClick = () => {
+    if (!movie._id) {
+      setError('Không tìm thấy ID phim. Vui lòng thử lại.');
+      setShowWatchlist(true);
+      return;
+    }
     fetchWatchlists();
     setShowWatchlist(true);
   };
@@ -107,6 +112,10 @@ const MovieCard = ({ movie }) => {
     setLoading(true);
     setError(null);
 
+    if (!movie._id) {
+      setError('Không tìm thấy ID phim. Vui lòng thử lại.');
+      return;
+    }
     try {
       const response = await fetch('http://localhost:5000/api/watchlist/add', {
         method: 'POST',

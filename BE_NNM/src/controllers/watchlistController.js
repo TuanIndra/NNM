@@ -28,24 +28,28 @@ exports.createWatchlist = async (req, res) => {
 // Thêm phim vào Watchlist
 exports.addMovieToWatchlist = async (req, res) => {
     try {
-        const { watchlistId, movieId } = req.body;
-        const userId = req.user.userId;
-
-        const watchlist = await Watchlist.findOne({ _id: watchlistId, user: userId });
-        if (!watchlist) return res.status(404).json({ message: "Watchlist not found" });
-
-        if (watchlist.movies.includes(movieId)) {
-            return res.status(400).json({ message: "Movie already in Watchlist" });
-        }
-
-        watchlist.movies.push(movieId);
-        await watchlist.save();
-
-        res.status(200).json({ message: "Movie added to Watchlist", watchlist });
+      const { watchlistId, movieId } = req.body;
+      const userId = req.user.userId;
+  
+      if (!movieId) {
+        return res.status(400).json({ message: "movieId không hợp lệ" });
+      }
+  
+      const watchlist = await Watchlist.findOne({ _id: watchlistId, user: userId });
+      if (!watchlist) return res.status(404).json({ message: "Watchlist not found" });
+  
+      if (watchlist.movies.includes(movieId)) {
+        return res.status(400).json({ message: "Movie already in Watchlist" });
+      }
+  
+      watchlist.movies.push(movieId);
+      await watchlist.save();
+  
+      res.status(200).json({ message: "Movie added to Watchlist", watchlist });
     } catch (err) {
-        res.status(500).json({ message: err.message });
+      res.status(500).json({ message: err.message });
     }
-};
+  };
 
 // Xóa phim khỏi Watchlist
 exports.removeMovieFromWatchlist = async (req, res) => {
