@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
-
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const API_URL = "http://localhost:5000/api/users";
 
 const ManageUsers = () => {
@@ -61,7 +62,7 @@ const ManageUsers = () => {
 
     const handleSaveUser = async () => {
         if (!userData.name || !userData.email || (!editMode && !userData.password)) {
-            alert("Vui lòng nhập đầy đủ thông tin!");
+            toast.warn("Vui lòng nhập đầy đủ thông tin!");
             return;
         }
 
@@ -92,7 +93,7 @@ const ManageUsers = () => {
 
             await fetchUsers();
             setShowModal(false);
-            alert(editMode ? "Cập nhật thành công!" : "Thêm người dùng thành công!");
+            toast.success(editMode ? "Cập nhật thành công!" : "Thêm người dùng thành công!");
         } catch (error) {
             console.error("Lỗi khi lưu người dùng:", error);
         }
@@ -106,7 +107,7 @@ const ManageUsers = () => {
             if (!response.ok) throw new Error("Lỗi khi xóa người dùng");
 
             await fetchUsers();
-            alert("Xóa người dùng thành công!");
+            toast.success("Xóa người dùng thành công!");
         } catch (error) {
             console.error("Lỗi khi xóa người dùng:", error);
         }
