@@ -17,18 +17,19 @@ const MainPage = () => {
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/movies'); // URL API
+        const response = await fetch('http://localhost:5000/api/movies');
         if (!response.ok) {
           throw new Error('Không thể tải danh sách phim');
         }
         const data = await response.json();
-        // Chuẩn hóa dữ liệu từ API để khớp với MovieCard
+        console.log('Dữ liệu phim từ API:', data); // Debug
         const formattedMovies = data.map(movie => ({
+          _id: movie._id, // Đảm bảo có _id
           title: movie.title,
-          image: movie.poster, // poster từ API
+          image: movie.poster,
           rating: movie.ratings.length > 0 
             ? (movie.ratings.reduce((sum, r) => sum + r.rating, 0) / movie.ratings.length).toFixed(1) 
-            : 0, // Tính trung bình rating nếu có
+            : 0,
         }));
         setMovies(formattedMovies);
       } catch (err) {
@@ -43,7 +44,7 @@ const MainPage = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <a href='#' className='bg-blue-500 rounded-lg shadow-md transition duration-300 hover:shadow-2xl hover:scale-105 cursor-pointer'>
+      <a href='/trailer' className='bg-blue-500 rounded-lg shadow-md transition duration-300 hover:shadow-2xl hover:scale-105 cursor-pointer'>
         <div className="flex items-start space-x-6 relative">
           <Banner></Banner>
           <div className="w-[40%] px-8">
