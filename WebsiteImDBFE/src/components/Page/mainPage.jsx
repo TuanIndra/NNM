@@ -43,7 +43,7 @@ const MainPage = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-      <a href='#' className='bg-blue-500 rounded-lg shadow-md transition duration-300 hover:shadow-2xl hover:scale-105 cursor-pointer'>
+      <a href='/trailer' className='bg-blue-500 rounded-lg shadow-md transition duration-300 hover:shadow-2xl hover:scale-105 cursor-pointer'>
         <div className="flex items-start space-x-6 relative">
           <Banner></Banner>
           <div className="w-[40%] px-8">
