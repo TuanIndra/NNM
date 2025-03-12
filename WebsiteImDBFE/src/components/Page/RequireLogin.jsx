@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate, useLocation } from "react-router-dom"; // Thêm useLocation
-
+import Navbar from '../Navbar/Navbar'
 const RequireLogin = () => {
   const navigate = useNavigate();
   const location = useLocation(); // Lấy thông tin location
