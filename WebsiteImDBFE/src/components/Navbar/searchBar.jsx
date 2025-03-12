@@ -61,12 +61,22 @@ const SearchBar = () => {
             {user.name} ▼
           </button>
           {menuOpen && (
-            <div className="absolute right-0 mt-2 bg-white text-black p-2 rounded-lg shadow-md">
-              <button onClick={handleLogout} className="block w-full text-left px-8 py-2 hover:bg-gray-100">
+            <div className="absolute right-0 top-full mt-2 bg-white text-black rounded-lg shadow-md w-32 z-50">
+              <button className="block w-full text-left px-6 py-2 hover:bg-gray-100 whitespace-nowrap">
+                Hồ sơ
+              </button>
+              <button className="block w-full text-left px-6 py-2 hover:bg-gray-100 whitespace-nowrap">
+                Cài đặt
+              </button>
+              <button
+                onClick={handleLogout}
+                className="block w-full text-left px-6 py-2 hover:bg-gray-100 whitespace-nowrap"
+              >
                 Đăng xuất
               </button>
             </div>
           )}
+
         </div>
       ) : (
         <button onClick={handleLoginClick} className="ml-3 text-sm font-medium hover:bg-gray-700 px-3 py-2 rounded-md">

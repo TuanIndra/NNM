@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom"; // Thêm useNavigate, useLocation
-import Navbar from "../Navbar/Navbar";
-
+import Navbar from '../Navbar/Navbar'
+import { toast } from "react-toastify";
 const LoginPage = () => {
   const [formData, setFormData] = useState({
     email: "",
@@ -41,7 +40,7 @@ const LoginPage = () => {
       localStorage.setItem("user", JSON.stringify(data.user));
       localStorage.setItem("token", data.token);
 
-      alert("Đăng nhập thành công!");
+      toast.success("Đăng nhập thành công!", { position: "top-center" });
 
       // Kiểm tra role để điều hướng
       if (data.user.role === "admin") {
