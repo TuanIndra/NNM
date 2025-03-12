@@ -7,6 +7,7 @@ import Banner from '../Utils/banner';
 import MovieSlider from '../Utils/MovieSlider';
 import FeatureNew from '../Utils/FeaturedNew';
 import FeaturedVideos from '../Utils/FeaturedVideo';
+import Footer from '../Page/Footer';
 
 const moviesData = [
   { title: "Khu Nghỉ Dưỡng Hoa Sen Trắng", image: "https://m.media-amazon.com/images/M/MV5BZmM1MGM0MDQtZTAzNy00ZGJkLWI4MDUtNjBmMzdhYjhlM2QwXkEyXkFqcGc@._V1_FMjpg_UX1000_.jpg", rating: 8.0 },
@@ -47,6 +48,9 @@ const MainPage = () => {
       <div className='text-white mt-20'>
       <a className='text-xl font-bold text-white '>  Top diễn viên nối tiếng</a>
         <MovieSlider movies={moviesData} />
+      </div>
+      <div className='mt-5'>
+        <Footer></Footer>
       </div>
 
     </div>

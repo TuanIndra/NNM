@@ -38,11 +38,14 @@ const FeaturedVideos = () => {
             {/* Grid hiển thị video */}
             <div className="flex space-x-4 overflow-x-auto">
                 {videos.map((video, index) => (
-                    <div key={index} className="w-80 bg-[#111] rounded-lg overflow-hidden shadow-lg">
+                    <div
+                        key={index}
+                        className="w-80 bg-black rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:bg-[#121212] hover:cursor-pointer"
+                    >
                         {/* Ảnh video */}
                         <div className="relative">
                             <img src={video.image} alt={video.title} className="w-full h-44 object-cover" />
-                            
+
                             {/* Thời lượng video */}
                             <div className="absolute bottom-2 left-2 bg-black/80 text-white text-xs px-2 py-1 rounded flex items-center">
                                 <FaPlay className="mr-1 text-yellow-400" /> {video.duration}
