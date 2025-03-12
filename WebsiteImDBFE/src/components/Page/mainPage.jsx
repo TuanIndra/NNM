@@ -86,6 +86,7 @@ const MainPage = () => {
           </div>
         </>
       )}
+      <Footer></Footer>
     </div>
   );
 };

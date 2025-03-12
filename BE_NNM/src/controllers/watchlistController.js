@@ -2,7 +2,7 @@ const User = require("../models/User");
 const Movie = require("../models/Movie");
 const Watchlist = require("../models/Watchlist");
 
-//tạo watchlist
+// Tạo watchlist
 exports.createWatchlist = async (req, res) => {
     try {
         const { name, description } = req.body;
@@ -56,7 +56,8 @@ exports.removeMovieFromWatchlist = async (req, res) => {
         const watchlist = await Watchlist.findOne({ _id: watchlistId, user: userId });
         if (!watchlist) return res.status(404).json({ message: "Watchlist not found" });
 
-        watchlist.movies = watchlist.movies.filter(id => id.toString() !== movieId);
+        // Kiểm tra và lọc mảng movies, đảm bảo id không phải null/undefined
+        watchlist.movies = watchlist.movies.filter(id => id && id.toString() !== movieId);
         await watchlist.save();
 
         res.status(200).json({ message: "Movie removed from Watchlist", watchlist });
@@ -77,7 +78,7 @@ exports.getUserWatchlists = async (req, res) => {
     }
 };
 
-//lấy danh sách phim trong watchlist
+// Lấy danh sách phim trong watchlist
 exports.getMoviesInWatchlist = async (req, res) => {
     try {
         const { watchlistId } = req.params;
@@ -99,7 +100,7 @@ exports.getMoviesInWatchlist = async (req, res) => {
     }
 };
 
-//xóa watchlist
+// Xóa watchlist
 exports.deleteWatchlist = async (req, res) => {
     try {
         const { watchlistId } = req.params;
