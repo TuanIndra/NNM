@@ -9,7 +9,6 @@ exports.getMovies = async (req, res) => {
 };
 
 
-//lấy tên phim theo id
 exports.getMovieById = async (req, res) => {
     try {
         const movie = await Movie.findById(req.params.id);

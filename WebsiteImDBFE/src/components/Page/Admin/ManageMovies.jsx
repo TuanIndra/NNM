@@ -10,6 +10,10 @@ const ManageMovies = () => {
     const [editMode, setEditMode] = useState(false);
     const [selectedMovie, setSelectedMovie] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 6;
+    const indexOfLastItem = currentPage * itemsPerPage;
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
     const [movieData, setMovieData] = useState({
         title: "",
         description: "",
@@ -36,9 +40,12 @@ const ManageMovies = () => {
             setLoading(false);
         }
     };
+
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
+        setCurrentPage(1); // Reset về trang đầu tiên khi tìm kiếm
     };
+
     const filteredMovies = movies.filter((movie) => {
         return (
             movie?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -48,14 +55,24 @@ const ManageMovies = () => {
                 movie.actors.some(actor => actor?.toLowerCase().includes(searchTerm.toLowerCase())))
         );
     });
-    
-    
+
+    const currentMovies = filteredMovies.slice(indexOfFirstItem, indexOfLastItem);
+    const totalPages = Math.ceil(filteredMovies.length / itemsPerPage);
+
+    const handleNextPage = () => {
+        if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+    };
+
+    const handlePrevPage = () => {
+        if (currentPage > 1) setCurrentPage(currentPage - 1);
+    };
 
     const openAddModal = () => {
         setEditMode(false);
         setMovieData({ title: "", releaseYear: "", genre: "", director: "", actors: "", poster: "" });
         setShowModal(true);
     };
+
     const openEditModal = (movie) => {
         if (!movie || !movie.releaseYear) {
             console.error("Lỗi: movie hoặc releaseYear bị undefined", movie);
@@ -67,7 +84,7 @@ const ManageMovies = () => {
         setMovieData({
             title: movie.title || "",
             description: movie.description || "",
-            releaseYear: movie.releaseYear ? movie.releaseYear.toString() : "",  // ✅ Kiểm tra trước khi gọi .toString()
+            releaseYear: movie.releaseYear ? movie.releaseYear.toString() : "",
             genre: movie.genre || "",
             director: movie.director || "",
             actors: movie.actors ? movie.actors.join(", ") : "",
@@ -75,8 +92,6 @@ const ManageMovies = () => {
         });
         setShowModal(true);
     };
-    
-    
 
     const handleInputChange = (e) => {
         setMovieData({ ...movieData, [e.target.name]: e.target.value });
@@ -90,11 +105,11 @@ const ManageMovies = () => {
     
         const requestBody = {
             title: movieData.title,
-            description: movieData.description,  // ✅ Bổ sung description
+            description: movieData.description,
             releaseYear: parseInt(movieData.releaseYear),
             genre: movieData.genre,
             director: movieData.director,
-            actors: movieData.actors.split(",").map(actor => actor.trim()), // ✅ Chia danh sách diễn viên
+            actors: movieData.actors.split(",").map(actor => actor.trim()),
             poster: movieData.poster
         };
     
@@ -123,7 +138,6 @@ const ManageMovies = () => {
             console.error("Lỗi khi lưu phim:", error);
         }
     };
-    
 
     const handleDeleteMovie = async (id) => {
         if (!window.confirm("Bạn có chắc chắn muốn xóa phim này?")) return;
@@ -138,11 +152,9 @@ const ManageMovies = () => {
             console.error("Lỗi khi xóa phim:", error);
         }
     };
-    
 
     return (
         <div className="p-4">
-
             <button onClick={openAddModal} className="bg-green-500 text-white px-4 py-2 mb-4 rounded">
                 Thêm Phim
             </button>
@@ -156,40 +168,60 @@ const ManageMovies = () => {
             {loading ? (
                 <p>Đang tải dữ liệu...</p>
             ) : (
-                
-            <table className="w-full bg-white shadow-md rounded">
-                <thead>
-                    <tr className="bg-gray-200">
-                        <th className="p-3 text-center">Tên Phim</th>
-                        <th className="p-3 text-center">Năm</th>
-                        <th className="p-3 text-center">Thể loại</th>
-                        <th className="p-3 text-center">Diễn viên</th>
-                        <th className="p-3 text-center">Đạo diễn</th>
-                        <th className="p-3 text-center">Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {filteredMovies.map(movie => (
-                        <tr key={movie._id} className="border-b text-center">
-                            <td className="p-3">{movie.title}</td>
-                            <td className="p-3">{movie.releaseYear}</td>
-                            <td className="p-3">{movie.genre}</td>
-                            <td className="p-3">{movie.actors.join(", ")}</td>
-                            <td className="p-3">{movie.director || "Không rõ"}</td>
-                            <td className="p-3 flex justify-center">
-                                <button onClick={() => openEditModal(movie)} className="bg-blue-500 text-white px-3 py-1 rounded mr-2">
-                                    Sửa
-                                </button>
-                                <button onClick={() => handleDeleteMovie(movie._id)} className="bg-red-500 text-white px-3 py-1 rounded">
-                                    Xóa
-                                </button>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
+                <>
+                    <table className="w-full bg-white shadow-md rounded">
+                        <thead>
+                            <tr className="bg-gray-200">
+                                <th className="p-3 text-center">Tên Phim</th>
+                                <th className="p-3 text-center">Năm</th>
+                                <th className="p-3 text-center">Thể loại</th>
+                                <th className="p-3 text-center">Diễn viên</th>
+                                <th className="p-3 text-center">Đạo diễn</th>
+                                <th className="p-3 text-center">Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {currentMovies.map(movie => (
+                                <tr key={movie._id} className="border-b text-center">
+                                    <td className="p-3">{movie.title}</td>
+                                    <td className="p-3">{movie.releaseYear}</td>
+                                    <td className="p-3">{movie.genre}</td>
+                                    <td className="p-3">{movie.actors.join(", ")}</td>
+                                    <td className="p-3">{movie.director || "Không rõ"}</td>
+                                    <td className="p-3 flex justify-center">
+                                        <button onClick={() => openEditModal(movie)} className="bg-blue-500 text-white px-3 py-1 rounded mr-2">
+                                            Sửa
+                                        </button>
+                                        <button onClick={() => handleDeleteMovie(movie._id)} className="bg-red-500 text-white px-3 py-1 rounded">
+                                            Xóa
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
 
-            </table>
-
+                    {/* Phân trang */}
+                    <div className="flex justify-between items-center mt-4">
+                        <button 
+                            onClick={handlePrevPage} 
+                            disabled={currentPage === 1}
+                            className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-300"
+                        >
+                            Trang trước
+                        </button>
+                        <span>
+                            Trang {currentPage} / {totalPages}
+                        </span>
+                        <button 
+                            onClick={handleNextPage} 
+                            disabled={currentPage === totalPages}
+                            className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-300"
+                        >
+                            Trang sau
+                        </button>
+                    </div>
+                </>
             )}
 
             {showModal && (
