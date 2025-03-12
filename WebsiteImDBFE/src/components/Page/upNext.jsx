@@ -30,7 +30,7 @@ const upNextVideos = [
 
 const UpNext = () => {
     return (
-        <div className="bg-gray-900 text-white p-4 rounded-lg w-120 h-[500px]">
+        <div className="bg-[#121212] text-white p-4 rounded-lg w-120 h-[500px]">
             <h2 className="text-lg font-bold mb-4 text-blue-500">Up next</h2>
             <div className="space-y-4">
                 {upNextVideos.map((video, index) => (

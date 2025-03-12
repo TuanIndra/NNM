@@ -15,6 +15,8 @@ import WatchlistMoviesPage from "./components/Watchlist/WatchlistMoviesPage";
 import RequireLogin from './components/Page/RequireLogin';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import TrailerPage from './components/Page/TrailerPage';
+
 const PrivateRoute = ({ children }) => {
   const user = JSON.parse(localStorage.getItem("user")); 
 
@@ -46,7 +48,7 @@ const App = () => {
         <Route path="/require-login" element={<RequireLogin />} />
         <Route path="/create-watchlist" element={<CreateWatchlistPage />} />
         <Route path="/watchlist/:id" element={<WatchlistMoviesPage />} />
-      
+        <Route path="/trailer" element={<TrailerPage/>}></Route>
         <Route
           path="admin/*"
           element={

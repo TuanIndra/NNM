@@ -1,11 +1,15 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom"; // Thêm useLocation
 
 const RequireLogin = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // Lấy thông tin location
+  const from = location.state?.from || "/home"; // Mặc định là /home nếu không có from
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white">
+    <div>
+      <Navbar></Navbar>
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white">
       <h1 className="text-2xl font-bold mb-4">Bạn cần đăng nhập để tiếp tục</h1>
       <p className="text-gray-400 mb-6">Vui lòng đăng nhập để sử dụng tính năng này.</p>
       <button
@@ -15,6 +19,8 @@ const RequireLogin = () => {
         Đăng nhập ngay
       </button>
     </div>
+    </div>
+    
   );
 };
 
