@@ -1,0 +1,10 @@
+{
+    "title": "Inception",
+    "description": "Một bộ phim khoa học viễn tưởng về giấc mơ.",
+    "releaseYear": 2010,
+    "genre": "Sci-Fi",
+    "director": "Christopher Nolan",
+    "actors": ["Leonardo DiCaprio", "Joseph Gordon-Levitt", "Elliot Page"],
+    "poster": "https://example.com/inception.jpg",
+    "trailer": "https://youtube.com/watch?v=YoHD9XEInc0"
+}
