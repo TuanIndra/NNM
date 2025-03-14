@@ -40,9 +40,9 @@ exports.createActor = async (req, res) => {
         });
 
         const savedActor = await newActor.save();
-        res.status(201).json(savedActor);
+        res.status(201).json(savedActor);  // ✅ Trả về status 201 khi thành công
     } catch (error) {
-        res.status400().json({ message: "Lỗi khi thêm diễn viên", error });
+        res.status(400).json({ message: "Lỗi khi thêm diễn viên", error });  // ✅ Sửa lại thành res.status(400)
     }
 };
 
