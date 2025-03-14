@@ -66,10 +66,10 @@ const UpNext = () => {
                         </div>
                     </div>
                 ))}
-                <a href='#' className='text-white flex items-center left-2 bottom-0 hover:text-orange-300 cursor-pointer text-xl font-bold'>
+                <div className='text-white flex items-center left-2 bottom-0 hover:text-orange-300 cursor-pointer text-xl font-bold'>
                     Xem thêm
                     <MdOutlineNavigateNext></MdOutlineNavigateNext>
-                </a>
+                </div>
             </div>
 
         </div>
