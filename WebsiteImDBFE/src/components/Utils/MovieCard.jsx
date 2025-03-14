@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { FaStar, FaPlay } from 'react-icons/fa';
-
+import { useNavigate } from 'react-router-dom';
 const MovieCard = ({ movie }) => {
   const [watchlists, setWatchlists] = useState([]); // Danh sách watchlist của user
   const [showWatchlist, setShowWatchlist] = useState(false); // Hiển thị popup
   const [loading, setLoading] = useState(false); // Trạng thái loading
   const [error, setError] = useState(null); // Trạng thái lỗi
-
+  const navigate = useNavigate()
   // Lấy danh sách watchlist khi nhấn nút
   const fetchWatchlists = async () => {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -40,7 +40,9 @@ const MovieCard = ({ movie }) => {
       setLoading(false);
     }
   };
-
+  const handleNavigateToDetail = () => {
+    navigate(`/movie/${movie._id}`);
+  };
   // Xử lý khi nhấn nút "+ Watchlist"
   const handleWatchlistClick = () => {
     if (!movie._id) {
@@ -145,12 +147,12 @@ const MovieCard = ({ movie }) => {
 
   return (
     <div className="bg-[#1a1a1a] rounded-lg shadow-md overflow-hidden w-48 relative">
-      <img src={movie.image} alt={movie.title} className="w-full h-64 object-cover rounded-t-lg" />
+      <img src={movie.image} alt={movie.title} className="w-full h-64 object-cover rounded-t-lg" onClick={handleNavigateToDetail} />
       <div className="p-3 text-white">
         <div className="flex items-center text-yellow-400">
           <FaStar className="mr-1" /> <span>{movie.rating}</span>
         </div>
-        <h3 className="text-sm font-bold mt-1 line-clamp-2 min-h-[40px]">{movie.title}</h3>
+        <h3 className="text-sm font-bold mt-1 line-clamp-2 min-h-[40px]"onClick={handleNavigateToDetail}>{movie.title}</h3>
         <button
           onClick={handleWatchlistClick}
           className="bg-gray-700 text-white text-sm w-full mt-2 py-1 rounded flex items-center justify-center hover:bg-gray-600"

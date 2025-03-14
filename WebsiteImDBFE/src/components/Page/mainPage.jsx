@@ -8,6 +8,7 @@ import FeatureNew from '../Utils/FeaturedNew';
 import FeaturedVideos from '../Utils/FeaturedVideo';
 import Footer from '../Page/Footer';
 import Navbar from '../Navbar/Navbar';
+import { useNavigate } from "react-router-dom";
 
 const MainPage = () => {
   const [movies, setMovies] = useState([]);
