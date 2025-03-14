@@ -24,7 +24,8 @@ const ManageMovies = () => {
         director: "",
         actors: "",
         poster: "",
-        trailer: ""
+        trailer: "",
+        bannerImage: "",
     });
 
     const [genres, setGenres] = useState([]);
@@ -69,11 +70,12 @@ const ManageMovies = () => {
     const filteredMovies = movies.filter((movie) => {
         const searchLower = searchTerm.toLowerCase();
         return (
-            movie?.title?.toLowerCase().includes(searchLower) ||
-            movie?.director?.toLowerCase().includes(searchLower) ||
+            movie?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            movie?.director?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             movie?.genre?.name?.toLowerCase().includes(searchLower) ||
-            (Array.isArray(movie.actors) && movie.actors.some(actor => actor?.toLowerCase().includes(searchLower)))
-        )
+            (Array.isArray(movie.actors) &&
+                movie.actors.some(actor => actor?.toLowerCase().includes(searchTerm.toLowerCase())))
+        );
     });
 
     const currentMovies = filteredMovies.slice(indexOfFirstItem, indexOfLastItem);
@@ -97,7 +99,8 @@ const ManageMovies = () => {
             director: "",
             actors: "",
             poster: "",
-            trailer: ""
+            trailer: "",
+            bannerImage: ""
         });
         setShowModal(true);
     };
@@ -118,7 +121,8 @@ const ManageMovies = () => {
             director: movie.director || "",
             actors: movie.actors ? movie.actors.join(", ") : "",
             poster: movie.poster || "",
-            trailer: movie.trailer || ""
+            trailer: movie.trailer || "",
+            bannerImage: movie.bannerImage || "",
         });
         setShowModal(true);
     };
@@ -128,7 +132,7 @@ const ManageMovies = () => {
     };
 
     const handleSaveMovie = async () => {
-        if (!movieData.title || !movieData.description || !movieData.releaseYear || !movieData.genre || !movieData.director) {
+        if (!movieData.title || !movieData.description || !movieData.releaseYear || !movieData.genre || !movieData.director || !movieData.trailer) {
             toast.warn("Vui lòng nhập đầy đủ thông tin!");
             return;
         }
@@ -161,7 +165,8 @@ const ManageMovies = () => {
             director: movieData.director,
             actors: movieData.actors.split(",").map(actor => actor.trim()),
             poster: movieData.poster,
-            trailer: movieData.trailer
+            trailer: movieData.trailer,
+            bannerImage: movieData.bannerImage,
         };
 
         setIsSaving(true);
@@ -295,6 +300,15 @@ const ManageMovies = () => {
                             <input type="text" name="actors" placeholder="Diễn viên (cách nhau bởi dấu phẩy)" value={movieData.actors} onChange={handleInputChange} className="border p-2 rounded" />
                             <input type="text" name="poster" placeholder="URL Poster" value={movieData.poster} onChange={handleInputChange} className="border p-2 rounded" />
                             <input type="text" name="trailer" placeholder="Link trailer" value={movieData.trailer} onChange={handleInputChange} className="border p-2 rounded" />
+                            <input
+                                type="text"
+                                name="bannerImage"
+                                placeholder="URL Banner Image"
+                                value={movieData.bannerImage}
+                                onChange={handleInputChange}
+                                className="border p-2 rounded"
+                            />
+
                         </div>
                         <div className="flex justify-end mt-4">
                             <button onClick={() => setShowModal(false)} className="bg-gray-500 text-white px-4 py-2 mr-2 rounded">Hủy</button>

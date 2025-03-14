@@ -5,7 +5,7 @@ exports.getMovies = async (req, res) => {
     try {
         const movies = await Movie.find()
             .populate("genre", "name") // Lấy tên thể loại thay vì ObjectId
-            .select("title poster actors genre releaseYear ratings director description");
+            .select("title poster actors genre releaseYear ratings director description createdAt bannerImage");
         res.json(movies);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -28,7 +28,7 @@ exports.addMovie = async (req, res) => {
     try {
         console.log("Request body:", req.body);
 
-        const { title, description, releaseYear, genre, director, actors, poster, trailer } = req.body;
+        const { title, description, releaseYear, genre, director, actors, poster, trailer, bannerImage } = req.body;
         if (!title || !description || !releaseYear || !genre || !director) {
             return res.status(400).json({ message: "Thiếu thông tin bắt buộc!" });
         }
@@ -36,8 +36,7 @@ exports.addMovie = async (req, res) => {
         // Kiểm tra thể loại có tồn tại không
         const existingGenre = await Genre.findById(genre);
         if (!existingGenre) return res.status(400).json({ message: "Thể loại không hợp lệ!" });
-
-        const movie = new Movie({ title, description, releaseYear, genre, director, actors, poster, trailer });
+        const movie = new Movie({ title, description, releaseYear, genre, director, actors, poster, trailer, bannerImage });
         const savedMovie = await movie.save();
 
         res.status(201).json(savedMovie);

@@ -49,9 +49,7 @@ const MainPage = () => {
       <div className=" relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 z-0 mt-14">
 
         <div className="flex items-start space-x-6 relative">
-          <a href='/trailer' className='bg-blue-500 rounded-lg shadow-md transition duration-300 hover:shadow-2xl hover:scale-105 cursor-pointer'>
-            <Banner></Banner>
-          </a>
+          <Banner/>
           <div className="w-[40%] px-8">
             <UpNext />
           </div>
