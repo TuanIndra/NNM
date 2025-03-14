@@ -36,4 +36,14 @@ const MovieSchema = new mongoose.Schema({
     comments: [{ userId: String, comment: String, date: { type: Date, default: Date.now } }],
 });
 
+
+http://localhost:5000/api/actors
+
 module.exports = mongoose.model('Movie', MovieSchema);
+
+{
+    "name": "Tom Cruise",
+    "birthDate": "1962-07-03",
+    "birthPlace": "Syracuse, New York, USA",
+    "knownForMovies": ["67d3c588e7a934055337c02b"]
+}
