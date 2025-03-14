@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 const API_URL = "http://localhost:5000/api/movies";
 
 const ManageMovies = () => {
@@ -11,6 +12,7 @@ const ManageMovies = () => {
     const [selectedMovie, setSelectedMovie] = useState(null);
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
+    const [isSaving, setIsSaving] = useState(false); // Thêm trạng thái isSaving
     const itemsPerPage = 6;
     const indexOfLastItem = currentPage * itemsPerPage;
     const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -23,13 +25,14 @@ const ManageMovies = () => {
         actors: "",
         poster: "",
         trailer: ""
-    }); 
+    });
 
     const [genres, setGenres] = useState([]);
 
     useEffect(() => {
         fetchMovies();
         fetchGenres();
+        console.log("Movie data state after update:", movieData);
     }, []);
 
     const fetchGenres = async () => {
@@ -40,6 +43,7 @@ const ManageMovies = () => {
             setGenres(data);
         } catch (error) {
             console.error("Lỗi khi tải danh sách thể loại:", error);
+            toast.error("Lỗi khi tải danh sách thể loại!");
         }
     };
 
@@ -51,23 +55,25 @@ const ManageMovies = () => {
             setMovies(data);
         } catch (error) {
             console.error("Lỗi khi tải dữ liệu:", error);
+            toast.error("Lỗi khi tải danh sách phim!");
         } finally {
             setLoading(false);
         }
     };
+
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
         setCurrentPage(1); // Reset về trang đầu tiên khi tìm kiếm
     };
 
     const filteredMovies = movies.filter((movie) => {
+        const searchLower = searchTerm.toLowerCase();
         return (
-            movie?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            movie?.director?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            movie?.genre?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (Array.isArray(movie.actors) && 
-                movie.actors.some(actor => actor?.toLowerCase().includes(searchTerm.toLowerCase())))
-        );
+            movie?.title?.toLowerCase().includes(searchLower) ||
+            movie?.director?.toLowerCase().includes(searchLower) ||
+            movie?.genre?.name?.toLowerCase().includes(searchLower) ||
+            (Array.isArray(movie.actors) && movie.actors.some(actor => actor?.toLowerCase().includes(searchLower)))
+        )
     });
 
     const currentMovies = filteredMovies.slice(indexOfFirstItem, indexOfLastItem);
@@ -83,7 +89,16 @@ const ManageMovies = () => {
 
     const openAddModal = () => {
         setEditMode(false);
-        setMovieData({ title: "", releaseYear: "", genre: "", director: "", actors: "", poster: "" });
+        setMovieData({
+            title: "",
+            description: "",
+            releaseYear: "",
+            genre: "",
+            director: "",
+            actors: "",
+            poster: "",
+            trailer: ""
+        });
         setShowModal(true);
     };
 
@@ -92,20 +107,19 @@ const ManageMovies = () => {
             console.error("Lỗi: movie hoặc releaseYear bị undefined", movie);
             return;
         }
-    
+
         setEditMode(true);
         setSelectedMovie(movie);
         setMovieData({
             title: movie.title || "",
             description: movie.description || "",
             releaseYear: movie.releaseYear ? movie.releaseYear.toString() : "",
-            genre: movie.genre || "",
+            genre: movie.genre?._id || movie.genre || "",
             director: movie.director || "",
             actors: movie.actors ? movie.actors.join(", ") : "",
             poster: movie.poster || "",
-            trailer: movie.trailer || "" 
+            trailer: movie.trailer || ""
         });
-        console.log("Movie data state after setting:", movieData);
         setShowModal(true);
     };
 
@@ -118,7 +132,27 @@ const ManageMovies = () => {
             toast.warn("Vui lòng nhập đầy đủ thông tin!");
             return;
         }
-    
+
+        // Kiểm tra URL hợp lệ
+        const isValidUrl = (url) => {
+            try {
+                new URL(url);
+                return true;
+            } catch (error) {
+                return false;
+            }
+        };
+
+        if (movieData.poster && !isValidUrl(movieData.poster)) {
+            toast.warn("URL Poster không hợp lệ!");
+            return;
+        }
+
+        if (movieData.trailer && !isValidUrl(movieData.trailer)) {
+            toast.warn("Link trailer không hợp lệ!");
+            return;
+        }
+
         const requestBody = {
             title: movieData.title,
             description: movieData.description,
@@ -129,7 +163,9 @@ const ManageMovies = () => {
             poster: movieData.poster,
             trailer: movieData.trailer
         };
-    
+
+        setIsSaving(true);
+
         try {
             let response;
             if (editMode) {
@@ -145,28 +181,32 @@ const ManageMovies = () => {
                     body: JSON.stringify(requestBody),
                 });
             }
-    
+
             if (!response.ok) throw new Error("Lỗi khi lưu phim");
-    
-            await fetchMovies(); 
+
+            await fetchMovies();
             setShowModal(false);
             toast.success(editMode ? "Cập nhật phim thành công!" : "Thêm phim thành công!");
         } catch (error) {
             console.error("Lỗi khi lưu phim:", error);
+            toast.error("Lỗi khi lưu phim!");
+        } finally {
+            setIsSaving(false);
         }
     };
 
     const handleDeleteMovie = async (id) => {
         if (!window.confirm("Bạn có chắc chắn muốn xóa phim này?")) return;
-    
+
         try {
             const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
             if (!response.ok) throw new Error("Lỗi khi xóa phim");
-    
-            await fetchMovies(); 
+
+            await fetchMovies();
             toast.success("Xóa phim thành công!");
         } catch (error) {
             console.error("Lỗi khi xóa phim:", error);
+            toast.error("Lỗi khi xóa phim!");
         }
     };
 
@@ -200,7 +240,9 @@ const ManageMovies = () => {
                         <tbody>
                             {currentMovies.map(movie => (
                                 <tr key={movie._id} className="border-b text-center">
-                                    <td className="p-3">{movie.title}</td><td className="p-3">{movie.releaseYear}</td><td className="p-3">{movie.genre?.name || "Không có thể loại"}</td>
+                                    <td className="p-3">{movie.title}</td>
+                                    <td className="p-3">{movie.releaseYear}</td>
+                                    <td className="p-3">{movie.genre?.name || "Không có thể loại"}</td>
                                     <td className="p-3">{Array.isArray(movie.actors) ? movie.actors.join(", ") : "Không có diễn viên"}</td>
                                     <td className="p-3">{movie.director || "Không rõ"}</td>
                                     <td className="p-3 flex justify-center">
@@ -210,13 +252,12 @@ const ManageMovies = () => {
                                 </tr>
                             ))}
                         </tbody>
-
                     </table>
 
                     {/* Phân trang */}
                     <div className="flex justify-between items-center mt-4">
-                        <button 
-                            onClick={handlePrevPage} 
+                        <button
+                            onClick={handlePrevPage}
                             disabled={currentPage === 1}
                             className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-300"
                         >
@@ -225,8 +266,8 @@ const ManageMovies = () => {
                         <span>
                             Trang {currentPage} / {totalPages}
                         </span>
-                        <button 
-                            onClick={handleNextPage} 
+                        <button
+                            onClick={handleNextPage}
                             disabled={currentPage === totalPages}
                             className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-300"
                         >
@@ -257,7 +298,9 @@ const ManageMovies = () => {
                         </div>
                         <div className="flex justify-end mt-4">
                             <button onClick={() => setShowModal(false)} className="bg-gray-500 text-white px-4 py-2 mr-2 rounded">Hủy</button>
-                            <button onClick={handleSaveMovie} className="bg-green-500 text-white px-4 py-2 rounded">Lưu</button>
+                            <button onClick={handleSaveMovie} disabled={isSaving} className="bg-green-500 text-white px-4 py-2 rounded disabled:bg-gray-300">
+                                {isSaving ? "Đang lưu..." : "Lưu"}
+                            </button>
                         </div>
                     </div>
                 </div>
