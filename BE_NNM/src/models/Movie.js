@@ -13,4 +13,4 @@ const MovieSchema = new mongoose.Schema({
     comments: [{ userId: String, comment: String, date: { type: Date, default: Date.now } }],
 });
 
-module.exports = mongoose.model("Actor", ActorSchema);
+module.exports = mongoose.model("Movie", MovieSchema);
