@@ -52,7 +52,6 @@ const TrailerPage = () => {
                             allow="autoplay; encrypted-media"
                             allowFullScreen
                         ></iframe>
-
                     </div>
 
                     {/* Sidebar bên phải */}
