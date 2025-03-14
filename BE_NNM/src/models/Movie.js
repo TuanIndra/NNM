@@ -11,6 +11,8 @@ const MovieSchema = new mongoose.Schema({
     trailer: { type: String },
     ratings: [{ userId: String, rating: Number }],
     comments: [{ userId: String, comment: String, date: { type: Date, default: Date.now } }],
+    createdAt: { type: Date, default: Date.now }, // Thêm trường createdAt
+    bannerImage: { type: String },
 });
 
 module.exports = mongoose.model("Movie", MovieSchema);

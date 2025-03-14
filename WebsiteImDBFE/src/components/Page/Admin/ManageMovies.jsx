@@ -22,8 +22,9 @@ const ManageMovies = () => {
         director: "",
         actors: "",
         poster: "",
-        trailer: ""
-    }); 
+        trailer: "",
+        bannerImage: "",
+    });
 
     useEffect(() => {
         fetchMovies();
@@ -52,7 +53,7 @@ const ManageMovies = () => {
             movie?.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             movie?.director?.toLowerCase().includes(searchTerm.toLowerCase()) ||
             movie?.genre?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (Array.isArray(movie.actors) && 
+            (Array.isArray(movie.actors) &&
                 movie.actors.some(actor => actor?.toLowerCase().includes(searchTerm.toLowerCase())))
         );
     });
@@ -70,7 +71,7 @@ const ManageMovies = () => {
 
     const openAddModal = () => {
         setEditMode(false);
-        setMovieData({ title: "", releaseYear: "", genre: "", director: "", actors: "", poster: "" });
+        setMovieData({ title: "", releaseYear: "", genre: "", director: "", actors: "", poster: "", bannerImage: "", });
         setShowModal(true);
     };
 
@@ -79,7 +80,7 @@ const ManageMovies = () => {
             console.error("Lỗi: movie hoặc releaseYear bị undefined", movie);
             return;
         }
-    
+
         setEditMode(true);
         setSelectedMovie(movie);
         setMovieData({
@@ -90,7 +91,8 @@ const ManageMovies = () => {
             director: movie.director || "",
             actors: movie.actors ? movie.actors.join(", ") : "",
             poster: movie.poster || "",
-            trailer: movie.trailer || "" 
+            trailer: movie.trailer || "",
+            bannerImage: movie.bannerImage || "",
         });
         console.log("Movie data state after setting:", movieData);
         setShowModal(true);
@@ -101,11 +103,11 @@ const ManageMovies = () => {
     };
 
     const handleSaveMovie = async () => {
-        if (!movieData.title || !movieData.description || !movieData.releaseYear || !movieData.genre || !movieData.director|| !movieData.trailer) {
+        if (!movieData.title || !movieData.description || !movieData.releaseYear || !movieData.genre || !movieData.director || !movieData.trailer) {
             toast.warn("Vui lòng nhập đầy đủ thông tin!");
             return;
         }
-    
+
         const requestBody = {
             title: movieData.title,
             description: movieData.description,
@@ -114,9 +116,10 @@ const ManageMovies = () => {
             director: movieData.director,
             actors: movieData.actors.split(",").map(actor => actor.trim()),
             poster: movieData.poster,
-            trailer: movieData.trailer
+            trailer: movieData.trailer,
+            bannerImage: movieData.bannerImage,
         };
-    
+
         try {
             let response;
             if (editMode) {
@@ -132,10 +135,10 @@ const ManageMovies = () => {
                     body: JSON.stringify(requestBody),
                 });
             }
-    
+
             if (!response.ok) throw new Error("Lỗi khi lưu phim");
-    
-            await fetchMovies(); 
+
+            await fetchMovies();
             setShowModal(false);
             toast.success(editMode ? "Cập nhật phim thành công!" : "Thêm phim thành công!");
         } catch (error) {
@@ -145,12 +148,12 @@ const ManageMovies = () => {
 
     const handleDeleteMovie = async (id) => {
         if (!window.confirm("Bạn có chắc chắn muốn xóa phim này?")) return;
-    
+
         try {
             const response = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
             if (!response.ok) throw new Error("Lỗi khi xóa phim");
-    
-            await fetchMovies(); 
+
+            await fetchMovies();
             toast.success("Xóa phim thành công!");
         } catch (error) {
             console.error("Lỗi khi xóa phim:", error);
@@ -207,8 +210,8 @@ const ManageMovies = () => {
 
                     {/* Phân trang */}
                     <div className="flex justify-between items-center mt-4">
-                        <button 
-                            onClick={handlePrevPage} 
+                        <button
+                            onClick={handlePrevPage}
                             disabled={currentPage === 1}
                             className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-300"
                         >
@@ -217,8 +220,8 @@ const ManageMovies = () => {
                         <span>
                             Trang {currentPage} / {totalPages}
                         </span>
-                        <button 
-                            onClick={handleNextPage} 
+                        <button
+                            onClick={handleNextPage}
                             disabled={currentPage === totalPages}
                             className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-300"
                         >
@@ -241,6 +244,14 @@ const ManageMovies = () => {
                             <input type="text" name="actors" placeholder="Diễn viên (cách nhau bởi dấu phẩy)" value={movieData.actors} onChange={handleInputChange} className="border p-2 rounded" />
                             <input type="text" name="poster" placeholder="URL Poster" value={movieData.poster} onChange={handleInputChange} className="border p-2 rounded" />
                             <input type="text" name="trailer" placeholder="Link trailer" value={movieData.trailer} onChange={handleInputChange} className="border p-2 rounded" />
+                            <input
+                                type="text"
+                                name="bannerImage"
+                                placeholder="URL Banner Image"
+                                value={movieData.bannerImage}
+                                onChange={handleInputChange}
+                                className="border p-2 rounded"
+                            />
 
                         </div>
                         <div className="flex justify-end mt-4">

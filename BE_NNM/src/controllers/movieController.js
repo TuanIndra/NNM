@@ -1,7 +1,7 @@
 const Movie = require('../models/Movie');
 exports.getMovies = async (req, res) => {
     try {
-        const movies = await Movie.find().select("title poster actors genre releaseYear ratings director description");
+        const movies = await Movie.find().select("title poster actors genre releaseYear ratings director description createdAt bannerImage");
         res.json(movies);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -24,12 +24,12 @@ exports.addMovie = async (req, res) => {
     try {
         console.log("Request body:", req.body);
 
-        const { title, description, releaseYear, genre, director, actors, poster, trailer } = req.body;
+        const { title, description, releaseYear, genre, director, actors, poster, trailer, bannerImage } = req.body;
         if (!title || !description || !releaseYear || !genre || !director) {
             return res.status(400).json({ message: "Thiếu thông tin bắt buộc!" });
         }
 
-        const movie = new Movie({ title, description, releaseYear, genre, director, actors, poster, trailer });
+        const movie = new Movie({ title, description, releaseYear, genre, director, actors, poster, trailer, bannerImage });
         const savedMovie = await movie.save();
 
         res.status(201).json(savedMovie);
