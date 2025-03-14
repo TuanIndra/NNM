@@ -68,11 +68,11 @@ const menuItems = [
 const MenuComponent = ({ onClose }) => {
     return (
         <motion.div
-            initial={{ y: "-100%", opacity: 0 }} // Bắt đầu từ trên cao và ẩn
-            animate={{ y: 0, opacity: 1 }} // Trượt xuống hiển thị
-            exit={{ y: "-100%", opacity: 0 }} // Khi đóng, trượt lên và ẩn
-            transition={{ duration: 0.2, ease: "easeOut" }} // Thời gian hiệu ứng
-            className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-90 text-white flex flex-col p-10 z-[100]"
+            initial={{ y: "-100%", opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: "-100%", opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="fixed top-0 left-0 w-full max-h-[80vh] bg-black bg-opacity-90 text-white flex flex-col p-10 z-[100] overflow-y-auto" // Thêm max-h và overflow-y
         >
             {/* IMDb Logo & Close Button */}
             <div className="flex justify-between items-center mb-8 px-4">
@@ -88,7 +88,7 @@ const MenuComponent = ({ onClose }) => {
             </div>
 
             {/* Menu Items */}
-            <div className="grid grid-cols-3 gap-8">
+            <div className="grid grid-cols-3 gap-8 min-h-0"> {/* Thêm min-h-0 để grid không vượt quá container */}
                 {menuItems.map((section, index) => (
                     <div key={index}>
                         <h3 className="text-lg font-bold flex items-center mb-3">
