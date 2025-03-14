@@ -47,14 +47,16 @@ const MainPage = () => {
     <div>
       <Navbar></Navbar>
       <div className=" relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 z-0 mt-14">
-        <a href='/trailer' className='bg-blue-500 rounded-lg shadow-md transition duration-300 hover:shadow-2xl hover:scale-105 cursor-pointer'>
-          <div className="flex items-start space-x-6 relative">
+
+        <div className="flex items-start space-x-6 relative">
+          <a href='/trailer' className='bg-blue-500 rounded-lg shadow-md transition duration-300 hover:shadow-2xl hover:scale-105 cursor-pointer'>
             <Banner></Banner>
-            <div className="w-[40%] px-8">
-              <UpNext />
-            </div>
+          </a>
+          <div className="w-[40%] px-8">
+            <UpNext />
           </div>
-        </a>
+        </div>
+
 
         {/* Thêm FeaturedNew */}
         <div className='mt-20'>
@@ -66,37 +68,37 @@ const MainPage = () => {
           <FeaturedVideos />
         </div>
 
-      {/* Thêm FeaturedVideos */}
-      <div className='mt-20'>
-        <FeaturedVideos />
-      </div>
+        {/* Thêm FeaturedVideos */}
+        <div className='mt-20'>
+          <FeaturedVideos />
+        </div>
 
-      <div className='mt-20'>
-        <a className='text-xl font-bold text-white'>Top diễn viên nổi tiếng</a>
-        <Slider></Slider>
+        <div className='mt-20'>
+          <a className='text-xl font-bold text-white'>Top diễn viên nổi tiếng</a>
+          <Slider></Slider>
+        </div>
+        {loading ? (
+          <p className="text-white">Đang tải phim...</p>
+        ) : error ? (
+          <p className="text-red-500">{error}</p>
+        ) : (
+          <>
+            <div className='text-white mt-20'>
+              <a className='text-xl font-bold text-white'>Phim nổi bật</a>
+              <MovieSlider movies={movies} />
+            </div>
+            <div className='text-white mt-20'>
+              <a className='text-xl font-bold text-white'>Phim mới</a>
+              <MovieSlider movies={movies} />
+            </div>
+            <div className='text-white mt-20'>
+              <a className='text-xl font-bold text-white'>Phim được yêu thích</a>
+              <MovieSlider movies={movies} />
+            </div>
+          </>
+        )}
+        <Footer></Footer>
       </div>
-      {loading ? (
-        <p className="text-white">Đang tải phim...</p>
-      ) : error ? (
-        <p className="text-red-500">{error}</p>
-      ) : (
-        <>
-          <div className='text-white mt-20'>
-            <a className='text-xl font-bold text-white'>Phim nổi bật</a>
-            <MovieSlider movies={movies} />
-          </div>
-          <div className='text-white mt-20'>
-            <a className='text-xl font-bold text-white'>Phim mới</a>
-            <MovieSlider movies={movies} />
-          </div>
-          <div className='text-white mt-20'>
-            <a className='text-xl font-bold text-white'>Phim được yêu thích</a>
-            <MovieSlider movies={movies} />
-          </div>
-        </>
-      )}
-      <Footer></Footer>
-    </div>
     </div>
 
   );
