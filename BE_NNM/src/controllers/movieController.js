@@ -1,7 +1,11 @@
-const Movie = require('../models/Movie');
+const Movie = require("../models/Movie");
+const Genre = require("../models/Genre");
+
 exports.getMovies = async (req, res) => {
     try {
-        const movies = await Movie.find().select("title poster actors genre releaseYear ratings director description");
+        const movies = await Movie.find()
+            .populate("genre", "name") // Lấy tên thể loại thay vì ObjectId
+            .select("title poster actors genre releaseYear ratings director description");
         res.json(movies);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -10,15 +14,15 @@ exports.getMovies = async (req, res) => {
 
 exports.getMovieById = async (req, res) => {
     try {
-        const movie = await Movie.findById(req.params.id);
+        const movie = await Movie.findById(req.params.id).populate("genre", "name");
         if (!movie) return res.status(404).json({ message: "Không tìm thấy phim" });
+
         console.log("Movie data:", movie);
         res.json(movie);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 };
-
 
 exports.addMovie = async (req, res) => {
     try {
@@ -28,6 +32,10 @@ exports.addMovie = async (req, res) => {
         if (!title || !description || !releaseYear || !genre || !director) {
             return res.status(400).json({ message: "Thiếu thông tin bắt buộc!" });
         }
+
+        // Kiểm tra thể loại có tồn tại không
+        const existingGenre = await Genre.findById(genre);
+        if (!existingGenre) return res.status(400).json({ message: "Thể loại không hợp lệ!" });
 
         const movie = new Movie({ title, description, releaseYear, genre, director, actors, poster, trailer });
         const savedMovie = await movie.save();
@@ -42,7 +50,16 @@ exports.addMovie = async (req, res) => {
 exports.updateMovie = async (req, res) => {
     try {
         console.log("Updating movie:", req.params.id);
-        const updatedMovie = await Movie.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+        const { genre } = req.body;
+
+        // Kiểm tra thể loại có tồn tại không
+        if (genre) {
+            const existingGenre = await Genre.findById(genre);
+            if (!existingGenre) return res.status(400).json({ message: "Thể loại không hợp lệ!" });
+        }
+
+        const updatedMovie = await Movie.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
+            .populate("genre", "name");
 
         if (!updatedMovie) {
             return res.status(404).json({ message: "Không tìm thấy phim để cập nhật" });
@@ -71,8 +88,7 @@ exports.deleteMovie = async (req, res) => {
     }
 };
 
-
-// Tìm kiếm phim: Cho phép người dùng tìm kiếm phim theo tiêu đề, thể loại, diễn viên
+// Tìm kiếm phim: Tìm theo tiêu đề, thể loại, diễn viên
 exports.searchMovies = async (req, res) => {
     try {
         const { query } = req.query;
@@ -81,13 +97,18 @@ exports.searchMovies = async (req, res) => {
             return res.status(400).json({ message: "Vui lòng nhập từ khóa tìm kiếm." });
         }
 
+        // Lấy danh sách thể loại có tên chứa từ khóa
+        const genres = await Genre.find({ name: { $regex: query, $options: "i" } });
+        const genreIds = genres.map(g => g._id); // Lấy danh sách ObjectId của thể loại
+
+        // Tìm kiếm phim theo tiêu đề, diễn viên hoặc thể loại
         const movies = await Movie.find({
             $or: [
                 { title: { $regex: query, $options: "i" } },
-                { genre: { $regex: query, $options: "i" } },
-                { actors: { $regex: query, $options: "i" } }
+                { actors: { $regex: query, $options: "i" } },
+                { genre: { $in: genreIds } } // Tìm theo danh sách ObjectId của thể loại
             ]
-        }).select("title poster actors genre ratings");
+        }).populate("genre", "name").select("title poster actors genre ratings");
 
         res.json(movies);
     } catch (err) {

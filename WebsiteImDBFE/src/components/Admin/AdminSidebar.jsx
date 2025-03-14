@@ -38,6 +38,12 @@ const AdminSidebar = () => {
                         </Link>
                     </li>
                     <li className="mb-4 flex items-center hover:bg-gray-800 p-2 rounded">
+                        <Link to="/admin/genres" className="flex items-center w-full text-white hover:text-yellow-400">
+                            <FaUsers className="mr-2 text-yellow-400" />
+                            {!isCollapsed && <span>Quản lý Thể loại</span>}
+                        </Link>
+                    </li>
+                    <li className="mb-4 flex items-center hover:bg-gray-800 p-2 rounded">
                         <Link to="/admin/reviews" className="flex items-center w-full text-white hover:text-yellow-400">
                             <FaStar className="mr-2 text-yellow-400" />
                             {!isCollapsed && <span>Quản lý Đánh giá</span>}

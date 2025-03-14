@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import AdminDashboard from "./components/Page/Admin/AdminDashboard";
 import ManageMovies from './components/Page/Admin/ManageMovies';
 import ManageUsers from './components/Page/Admin/ManageUsers';
+import ManageGenres from './components/Page/Admin/ManageGenres';
 import ManageReviews from './components/Page/Admin/ManageReviews';
 import AdminStats from "./components/Page/Admin/AdminStats";
 import NotFound from './components/Page/notfoundPage';
@@ -63,6 +64,7 @@ const App = () => {
         >
           <Route path="movies" element={<ManageMovies />} />
           <Route path="users" element={<ManageUsers />} />
+          <Route path="genres" element={<ManageGenres />} />
           <Route path="reviews" element={<ManageReviews />} />
           <Route path="stats" element={<AdminStats />} />
         </Route>

@@ -25,23 +25,9 @@ const ManageMovies = () => {
         trailer: ""
     }); 
 
-    const [genres, setGenres] = useState([]);
-
     useEffect(() => {
         fetchMovies();
-        fetchGenres();
     }, []);
-
-    const fetchGenres = async () => {
-        try {
-            const response = await fetch("http://localhost:5000/api/genres");
-            if (!response.ok) throw new Error("Lỗi khi tải danh sách thể loại");
-            const data = await response.json();
-            setGenres(data);
-        } catch (error) {
-            console.error("Lỗi khi tải danh sách thể loại:", error);
-        }
-    };
 
     const fetchMovies = async () => {
         try {
@@ -55,6 +41,7 @@ const ManageMovies = () => {
             setLoading(false);
         }
     };
+
     const handleSearchChange = (e) => {
         setSearchTerm(e.target.value);
         setCurrentPage(1); // Reset về trang đầu tiên khi tìm kiếm
@@ -114,7 +101,7 @@ const ManageMovies = () => {
     };
 
     const handleSaveMovie = async () => {
-        if (!movieData.title || !movieData.description || !movieData.releaseYear || !movieData.genre || !movieData.director) {
+        if (!movieData.title || !movieData.description || !movieData.releaseYear || !movieData.genre || !movieData.director|| !movieData.trailer) {
             toast.warn("Vui lòng nhập đầy đủ thông tin!");
             return;
         }
@@ -200,17 +187,22 @@ const ManageMovies = () => {
                         <tbody>
                             {currentMovies.map(movie => (
                                 <tr key={movie._id} className="border-b text-center">
-                                    <td className="p-3">{movie.title}</td><td className="p-3">{movie.releaseYear}</td><td className="p-3">{movie.genre?.name || "Không có thể loại"}</td>
-                                    <td className="p-3">{Array.isArray(movie.actors) ? movie.actors.join(", ") : "Không có diễn viên"}</td>
+                                    <td className="p-3">{movie.title}</td>
+                                    <td className="p-3">{movie.releaseYear}</td>
+                                    <td className="p-3">{movie.genre}</td>
+                                    <td className="p-3">{movie.actors.join(", ")}</td>
                                     <td className="p-3">{movie.director || "Không rõ"}</td>
                                     <td className="p-3 flex justify-center">
-                                        <button onClick={() => openEditModal(movie)} className="bg-blue-500 text-white px-3 py-1 rounded mr-2">Sửa</button>
-                                        <button onClick={() => handleDeleteMovie(movie._id)} className="bg-red-500 text-white px-3 py-1 rounded">Xóa</button>
+                                        <button onClick={() => openEditModal(movie)} className="bg-blue-500 text-white px-3 py-1 rounded mr-2">
+                                            Sửa
+                                        </button>
+                                        <button onClick={() => handleDeleteMovie(movie._id)} className="bg-red-500 text-white px-3 py-1 rounded">
+                                            Xóa
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
-
                     </table>
 
                     {/* Phân trang */}
@@ -244,16 +236,12 @@ const ManageMovies = () => {
                             <input type="text" name="title" placeholder="Tên phim" value={movieData.title} onChange={handleInputChange} className="border p-2 rounded" />
                             <input type="text" name="description" placeholder="Mô tả phim" value={movieData.description} onChange={handleInputChange} className="border p-2 rounded" />
                             <input type="number" name="releaseYear" placeholder="Năm phát hành" value={movieData.releaseYear} onChange={handleInputChange} className="border p-2 rounded" />
-                            <select name="genre" value={movieData.genre} onChange={handleInputChange} className="border p-2 rounded">
-                                <option value="">Chọn thể loại</option>
-                                {genres.map(genre => (
-                                    <option key={genre._id} value={genre._id}>{genre.name}</option>
-                                ))}
-                            </select>
+                            <input type="text" name="genre" placeholder="Thể loại" value={movieData.genre} onChange={handleInputChange} className="border p-2 rounded" />
                             <input type="text" name="director" placeholder="Đạo diễn" value={movieData.director} onChange={handleInputChange} className="border p-2 rounded" />
                             <input type="text" name="actors" placeholder="Diễn viên (cách nhau bởi dấu phẩy)" value={movieData.actors} onChange={handleInputChange} className="border p-2 rounded" />
                             <input type="text" name="poster" placeholder="URL Poster" value={movieData.poster} onChange={handleInputChange} className="border p-2 rounded" />
                             <input type="text" name="trailer" placeholder="Link trailer" value={movieData.trailer} onChange={handleInputChange} className="border p-2 rounded" />
+
                         </div>
                         <div className="flex justify-end mt-4">
                             <button onClick={() => setShowModal(false)} className="bg-gray-500 text-white px-4 py-2 mr-2 rounded">Hủy</button>

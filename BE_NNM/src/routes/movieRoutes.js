@@ -8,5 +8,3 @@ router.post("/", movieController.addMovie);
 router.put("/:id", movieController.updateMovie); 
 router.delete("/:id", movieController.deleteMovie); 
 router.get("/search", movieController.searchMovies); 
-
-module.exports = router;
