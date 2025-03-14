@@ -16,6 +16,7 @@ import RequireLogin from './components/Page/RequireLogin';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TrailerPage from './components/Page/TrailerPage';
+import ActorDetail from './components/Page/Actor/ActorDetail';
 
 const PrivateRoute = ({ children }) => {
   const user = JSON.parse(localStorage.getItem("user")); 
@@ -40,6 +41,7 @@ const App = () => {
         draggable 
       />
       <Routes>
+      <Route path="/actor" element={<ActorDetail />} />
         <Route path='/' element={<Navigate to='/home' />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/register" element={<SignupForm />} />

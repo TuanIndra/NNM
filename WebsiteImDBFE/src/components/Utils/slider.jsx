@@ -29,19 +29,22 @@ const ImageSlider = () => {
 
     return (
         <div className='w-full px-5 py-5'>
-        <Slider {...settings}>
-            {actors.map(actor => (
-                <div key={actor._id} className='px-2'>
-                    <img 
-                        src={actor.profileImage || 'https://via.placeholder.com/150'} 
-                        alt={actor.name} 
-                        className='w-40 h-60 object-cover rounded-2xl' 
-                    />
-                    <p className="text-center mt-2 font-semibold text-white">{actor.name}</p>
-                </div>
-            ))}
-        </Slider>
-    </div>
+            <Slider {...settings}>
+                {actors.map(actor => (
+                    <a href='/actor'>
+                        <div key={actor._id} className='px-2'>
+                            <img
+                                src={actor.profileImage || 'https://via.placeholder.com/150'}
+                                alt={actor.name}
+                                className='w-40 h-40 object-cover rounded-full border-2 border-gray-500 mx-auto'
+                            />
+                            <p className="text-center mt-2 font-semibold text-white">{actor.name}</p>
+                        </div>
+                    </a>
+
+                ))}
+            </Slider>
+        </div>
     );
 }
 
