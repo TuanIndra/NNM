@@ -65,7 +65,7 @@ const TrailerPage = () => {
                         <p className="text-gray-400 mt-2"><strong>Thể loại:</strong> {movie.genre?.name || "Không có thể loại"}</p>
                         <p className="text-gray-400 mt-1"><strong>Đạo diễn:</strong> {movie.director}</p>
                         <p className="text-gray-400 mt-1"><strong>Diễn viên:</strong> {movie.actors}</p>
-                        <p className="text-gray-400 mt-1"><strong>Năm phát hành:</strong> {movie.year}</p>
+                        <p className="text-gray-400 mt-1"><strong>Năm phát hành:</strong> {movie.releaseYear}</p>
                     </div>
                 </div>
                 <div>
