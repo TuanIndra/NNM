@@ -8,28 +8,28 @@ exports.getMovies = async (req, res) => {
     }
 };
 
-
 exports.getMovieById = async (req, res) => {
     try {
         const movie = await Movie.findById(req.params.id);
+        if (!movie) return res.status(404).json({ message: "Không tìm thấy phim" });
+        console.log("Movie data:", movie);
         res.json(movie);
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
 };
 
+
 exports.addMovie = async (req, res) => {
     try {
         console.log("Request body:", req.body);
 
-        // Kiểm tra dữ liệu đầu vào
-        const { title, description, releaseYear, genre, director, actors, poster } = req.body;
+        const { title, description, releaseYear, genre, director, actors, poster, trailer } = req.body;
         if (!title || !description || !releaseYear || !genre || !director) {
             return res.status(400).json({ message: "Thiếu thông tin bắt buộc!" });
         }
 
-        // Tạo và lưu phim mới
-        const movie = new Movie({ title, description, releaseYear, genre, director, actors, poster });
+        const movie = new Movie({ title, description, releaseYear, genre, director, actors, poster, trailer });
         const savedMovie = await movie.save();
 
         res.status(201).json(savedMovie);
@@ -38,6 +38,7 @@ exports.addMovie = async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 };
+
 exports.updateMovie = async (req, res) => {
     try {
         console.log("Updating movie:", req.params.id);
@@ -53,6 +54,7 @@ exports.updateMovie = async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 };
+
 exports.deleteMovie = async (req, res) => {
     try {
         console.log("Deleting movie:", req.params.id);
