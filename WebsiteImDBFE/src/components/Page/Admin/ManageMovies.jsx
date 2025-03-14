@@ -21,8 +21,9 @@ const ManageMovies = () => {
         genre: "",
         director: "",
         actors: "",
-        poster: ""
-    });
+        poster: "",
+        trailer: ""
+    }); 
 
     useEffect(() => {
         fetchMovies();
@@ -88,8 +89,10 @@ const ManageMovies = () => {
             genre: movie.genre || "",
             director: movie.director || "",
             actors: movie.actors ? movie.actors.join(", ") : "",
-            poster: movie.poster || ""
+            poster: movie.poster || "",
+            trailer: movie.trailer || "" 
         });
+        console.log("Movie data state after setting:", movieData);
         setShowModal(true);
     };
 
@@ -98,7 +101,7 @@ const ManageMovies = () => {
     };
 
     const handleSaveMovie = async () => {
-        if (!movieData.title || !movieData.description || !movieData.releaseYear || !movieData.genre || !movieData.director) {
+        if (!movieData.title || !movieData.description || !movieData.releaseYear || !movieData.genre || !movieData.director|| !movieData.trailer) {
             toast.warn("Vui lòng nhập đầy đủ thông tin!");
             return;
         }
@@ -110,7 +113,8 @@ const ManageMovies = () => {
             genre: movieData.genre,
             director: movieData.director,
             actors: movieData.actors.split(",").map(actor => actor.trim()),
-            poster: movieData.poster
+            poster: movieData.poster,
+            trailer: movieData.trailer
         };
     
         try {
@@ -236,6 +240,8 @@ const ManageMovies = () => {
                             <input type="text" name="director" placeholder="Đạo diễn" value={movieData.director} onChange={handleInputChange} className="border p-2 rounded" />
                             <input type="text" name="actors" placeholder="Diễn viên (cách nhau bởi dấu phẩy)" value={movieData.actors} onChange={handleInputChange} className="border p-2 rounded" />
                             <input type="text" name="poster" placeholder="URL Poster" value={movieData.poster} onChange={handleInputChange} className="border p-2 rounded" />
+                            <input type="text" name="trailer" placeholder="Link trailer" value={movieData.trailer} onChange={handleInputChange} className="border p-2 rounded" />
+
                         </div>
                         <div className="flex justify-end mt-4">
                             <button onClick={() => setShowModal(false)} className="bg-gray-500 text-white px-4 py-2 mr-2 rounded">Hủy</button>

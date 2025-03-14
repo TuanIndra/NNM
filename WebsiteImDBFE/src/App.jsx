@@ -13,7 +13,7 @@ import WatchlistPage from "./components/Watchlist/watchlistPage";
 import CreateWatchlistPage from "./components/Watchlist/createWatchlist";
 import WatchlistMoviesPage from "./components/Watchlist/WatchlistMoviesPage";
 import RequireLogin from './components/Page/RequireLogin';
-import MovieDetail from "./components/Page/MovieDetail";
+
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TrailerPage from './components/Page/TrailerPage';
@@ -49,8 +49,8 @@ const App = () => {
         <Route path="/require-login" element={<RequireLogin />} />
         <Route path="/create-watchlist" element={<CreateWatchlistPage />} />
         <Route path="/watchlist/:id" element={<WatchlistMoviesPage />} />
-        <Route path="/trailer" element={<TrailerPage/>}></Route>
-        <Route path="/movie/:id" element={<MovieDetail />} />
+        <Route path="/movie/:id" element={<TrailerPage />} />
+
         <Route
           path="admin/*"
           element={
