@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import logo from "../../assets/logo.png";
 import { CiMenuBurger } from "react-icons/ci";
 import SearchBar from "./searchBar";
@@ -8,6 +8,18 @@ const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State menu
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = "hidden"; // Chặn scroll
+    } else {
+      document.body.style.overflow = "auto"; // Bỏ chặn scroll
+    }
+    // Cleanup khi component unmount
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, [isMenuOpen]);
 
   return (
     <>

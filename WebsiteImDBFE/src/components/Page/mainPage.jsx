@@ -8,13 +8,11 @@ import FeatureNew from '../Utils/FeaturedNew';
 import FeaturedVideos from '../Utils/FeaturedVideo';
 import Footer from '../Page/Footer';
 import Navbar from '../Navbar/Navbar';
-import MenuComponent from '../Utils/MenuComponent';
 
 const MainPage = () => {
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null); // State để xử lý lỗi
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Fetch dữ liệu phim từ API khi component mount
   useEffect(() => {
