@@ -6,7 +6,7 @@ exports.getMovies = async (req, res) => {
     try {
         const { page = 1, limit = 10 } = req.query;
         const movies = await Movie.find()
-            .populate("genre", "name")
+            .populate("genre", "name") // Populate mảng genre
             .populate("actors", "name")
             .select("title poster actors genre releaseYear ratings director description createdAt bannerImage")
             .limit(limit * 1)
@@ -44,8 +44,11 @@ exports.addMovie = async (req, res) => {
             return res.status(400).json({ message: "Thiếu thông tin bắt buộc!" });
         }
 
-        const existingGenre = await Genre.findById(genre);
-        if (!existingGenre) return res.status(400).json({ message: "Thể loại không hợp lệ!" });
+        // Kiểm tra tất cả thể loại trong mảng genre
+        const existingGenres = await Genre.find({ _id: { $in: genre } });
+        if (existingGenres.length !== genre.length) {
+            return res.status(400).json({ message: "Một hoặc nhiều thể loại không hợp lệ!" });
+        }
 
         const validActors = await Actor.find({ _id: { $in: actors } });
         if (validActors.length !== actors.length) {
@@ -56,7 +59,7 @@ exports.addMovie = async (req, res) => {
             title,
             description,
             releaseYear,
-            genre,
+            genre, // genre giờ là mảng
             director,
             actors,
             poster,
@@ -65,10 +68,9 @@ exports.addMovie = async (req, res) => {
         });
         const savedMovie = await movie.save();
 
-        // Cập nhật knownForMovies của các diễn viên
         await Actor.updateMany(
             { _id: { $in: actors } },
-            { $addToSet: { knownForMovies: savedMovie._id } } // $addToSet tránh trùng lặp
+            { $addToSet: { knownForMovies: savedMovie._id } }
         );
 
         res.status(201).json(savedMovie);
@@ -83,8 +85,10 @@ exports.updateMovie = async (req, res) => {
         const { genre, actors } = req.body;
 
         if (genre) {
-            const existingGenre = await Genre.findById(genre);
-            if (!existingGenre) return res.status(400).json({ message: "Thể loại không hợp lệ!" });
+            const existingGenres = await Genre.find({ _id: { $in: genre } });
+            if (existingGenres.length !== genre.length) {
+                return res.status(400).json({ message: "Một hoặc nhiều thể loại không hợp lệ!" });
+            }
         }
 
         const existingMovie = await Movie.findById(req.params.id);
@@ -96,12 +100,10 @@ exports.updateMovie = async (req, res) => {
                 return res.status(400).json({ message: "Một hoặc nhiều diễn viên không hợp lệ!" });
             }
 
-            // Xác định diễn viên bị xóa và thêm
             const oldActors = existingMovie.actors.map((id) => id.toString());
             const actorsToRemove = oldActors.filter((id) => !actors.includes(id));
             const actorsToAdd = actors.filter((id) => !oldActors.includes(id));
 
-            // Xóa movieId khỏi knownForMovies của các diễn viên bị xóa
             if (actorsToRemove.length > 0) {
                 await Actor.updateMany(
                     { _id: { $in: actorsToRemove } },
@@ -109,7 +111,6 @@ exports.updateMovie = async (req, res) => {
                 );
             }
 
-            // Thêm movieId vào knownForMovies của các diễn viên mới
             if (actorsToAdd.length > 0) {
                 await Actor.updateMany(
                     { _id: { $in: actorsToAdd } },
@@ -131,7 +132,6 @@ exports.updateMovie = async (req, res) => {
         res.status(400).json({ message: err.message });
     }
 };
-
 exports.deleteMovie = async (req, res) => {
     try {
         const deletedMovie = await Movie.findByIdAndDelete(req.params.id);
@@ -177,5 +177,35 @@ exports.searchMovies = async (req, res) => {
         res.json(movies);
     } catch (err) {
         res.status(500).json({ message: err.message });
+    }
+};
+
+// Thêm hàm xử lý rating
+exports.rateMovie = async (req, res) => {
+    const { id } = req.params;
+    const { rating } = req.body;
+    const userId = req.user.userId; // Lấy userId từ token qua authMiddleware
+
+    try {
+        console.log("Rating request:", { id, userId, rating });
+        const movie = await Movie.findById(id);
+        if (!movie) return res.status(404).json({ message: 'Phim không tồn tại' });
+
+        if (!Number.isInteger(rating) || rating < 1 || rating > 10) {
+            return res.status(400).json({ message: 'Đánh giá phải là số nguyên từ 1 đến 10' });
+        }
+
+        const existingRatingIndex = movie.ratings.findIndex(r => r.userId === userId);
+        if (existingRatingIndex !== -1) {
+            movie.ratings[existingRatingIndex].rating = rating;
+        } else {
+            movie.ratings.push({ userId, rating });
+        }
+
+        const updatedMovie = await movie.save();
+        res.status(200).json(updatedMovie);
+    } catch (error) {
+        console.error("Error rating movie:", error.stack);
+        res.status(500).json({ message: 'Lỗi server', error });
     }
 };
