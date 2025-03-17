@@ -5,7 +5,7 @@ const MoreTrailers = () => {
     ];
 
     return (
-        <div className="mt-10">
+        <div className="mt-10 ml-[156px]">
             <h2 className="text-2xl font-bold mb-4">More Trailers</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {movies.map(movie => (

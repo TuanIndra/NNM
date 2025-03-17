@@ -10,10 +10,13 @@ exports.getAllActors = async (req, res) => {
     }
 };
 
+// 🟢 Lấy thông tin chi tiết 1 diễn viên theo ID (bao gồm phim)
 exports.getActorById = async (req, res) => {
     try {
-        const actor = await Actor.findById(req.params.id).populate("knownForMovies", "title releaseYear genre");
+        const actor = await Actor.findById(req.params.id)
+            .populate("knownForMovies", "title releaseYear genre");
         if (!actor) return res.status(404).json({ message: "Không tìm thấy diễn viên" });
+
         res.status(200).json(actor);
     } catch (error) {
         res.status(500).json({ message: "Lỗi khi lấy thông tin diễn viên", error });
@@ -22,7 +25,7 @@ exports.getActorById = async (req, res) => {
 
 exports.createActor = async (req, res) => {
     try {
-        const { name, birthDate, birthPlace, knownForMovies = [], profileImage } = req.body;
+        const { name, birthDate, birthPlace, knownForMovies = [], profileImage, photos = [] } = req.body;
 
         if (!name) {
             return res.status(400).json({ message: "Tên diễn viên là bắt buộc!" });
@@ -37,28 +40,24 @@ exports.createActor = async (req, res) => {
             birthDate,
             birthPlace,
             knownForMovies: movieIds,
-            profileImage,
+            profileImage, 
+            photos  // ✅ Thêm danh sách ảnh vào đây
         });
 
         const savedActor = await newActor.save();
-
-        // Cập nhật actors của các phim
-        await Movie.updateMany(
-            { _id: { $in: movieIds } },
-            { $addToSet: { actors: savedActor._id } }
-        );
-
-        res.status(201).json(savedActor);
+        res.status(201).json(savedActor);  // ✅ Trả về status 201 khi thành công
     } catch (error) {
-        console.error("Error adding actor:", error);
-        res.status(400).json({ message: "Lỗi khi thêm diễn viên", error });
+        res.status(400).json({ message: "Lỗi khi thêm diễn viên", error });  // ✅ Sửa lại thành res.status(400)
     }
 };
 
+
+// 🟢 Cập nhật thông tin diễn viên theo ID
 exports.updateActor = async (req, res) => {
     try {
-        const { name, birthDate, birthPlace, knownForMovies, profileImage } = req.body;
+        const { name, birthDate, birthPlace, knownForMovies, profileImage, photos } = req.body;
 
+        // Lấy diễn viên hiện tại để giữ nguyên profileImage nếu không có ảnh mới
         const existingActor = await Actor.findById(req.params.id);
         if (!existingActor) return res.status(404).json({ message: "Không tìm thấy diễn viên" });
 
@@ -99,8 +98,9 @@ exports.updateActor = async (req, res) => {
                 name,
                 birthDate,
                 birthPlace,
-                profileImage: profileImage || existingActor.profileImage,
+                profileImage: profileImage || existingActor.profileImage,  // ✅ Giữ nguyên nếu không có ảnh mới
                 knownForMovies: movieIds,
+                photos: photos || existingActor.photos  // ✅ Giữ nguyên nếu không có cập nhật ảnh
             },
             { new: true }
         ).populate("knownForMovies", "title releaseYear");
