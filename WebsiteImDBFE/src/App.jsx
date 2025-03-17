@@ -14,7 +14,7 @@ import WatchlistPage from "./components/Watchlist/watchlistPage";
 import CreateWatchlistPage from "./components/Watchlist/createWatchlist";
 import WatchlistMoviesPage from "./components/Watchlist/WatchlistMoviesPage";
 import RequireLogin from './components/Page/RequireLogin';
-
+import ManageActor from './components/Page/Admin/ManageActor';
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TrailerPage from './components/Page/TrailerPage';
@@ -66,6 +66,7 @@ const App = () => {
           <Route path="users" element={<ManageUsers />} />
           <Route path="genres" element={<ManageGenres />} />
           <Route path="reviews" element={<ManageReviews />} />
+          <Route path="actors" element={<ManageActor/>} />
           <Route path="stats" element={<AdminStats />} />
         </Route>
 

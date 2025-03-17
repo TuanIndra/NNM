@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar';
-import { IoIosArrowForward } from "react-icons/io";
 import FeaturedVideos from '../Utils/FeaturedVideo';
+
 const TrailerPage = () => {
-    const { id } = useParams();  // Lấy ID từ URL
+    const { id } = useParams();
     const navigate = useNavigate();
     const [movie, setMovie] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -18,6 +18,7 @@ const TrailerPage = () => {
                     throw new Error('Không thể tải dữ liệu phim');
                 }
                 const data = await response.json();
+                console.log('Fetched movie:', data); // Debugging
                 setMovie(data);
             } catch (err) {
                 setError(err.message);
@@ -62,9 +63,19 @@ const TrailerPage = () => {
                         </div>
                         <hr className="border-t border-gray-500 my-4 w-full" />
                         <p className="text-gray-300 text-sm mt-2">{movie.description}</p>
-                        <p className="text-gray-400 mt-2"><strong>Thể loại:</strong> {movie.genre?.name || "Không có thể loại"}</p>
+                        <p className="text-gray-400 mt-2">
+                            <strong>Thể loại:</strong>{" "}
+                            {movie.genre && typeof movie.genre === "object" && movie.genre.name
+                                ? movie.genre.name
+                                : "Không có thể loại"}
+                        </p>
                         <p className="text-gray-400 mt-1"><strong>Đạo diễn:</strong> {movie.director}</p>
-                        <p className="text-gray-400 mt-1"><strong>Diễn viên:</strong> {movie.actors}</p>
+                        <p className="text-gray-400 mt-1">
+                            <strong>Diễn viên:</strong>{" "}
+                            {movie.actors && movie.actors.length > 0
+                                ? movie.actors.map(actor => actor.name).join(", ")
+                                : "Không có diễn viên"}
+                        </p>
                         <p className="text-gray-400 mt-1"><strong>Năm phát hành:</strong> {movie.releaseYear}</p>
                     </div>
                 </div>

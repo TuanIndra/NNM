@@ -6,7 +6,7 @@ const ActorSchema = new mongoose.Schema({
     name: { type: String, required: true },
     birthDate: { type: Date },
     birthPlace: { type: String, default: "" },
-    knownForMovies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Movie" }],  // ✅ Lưu danh sách phim
+    knownForMovies: [{ type: mongoose.Schema.Types.ObjectId, ref: "Movie" }], 
     profileImage: { type: String }
 });
 

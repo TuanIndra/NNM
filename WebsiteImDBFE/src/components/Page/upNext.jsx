@@ -1,31 +1,30 @@
 import React, { useState, useEffect } from 'react';
 import { PlayCircle, ThumbsUp, Heart } from 'lucide-react';
 import { MdOutlineNavigateNext } from "react-icons/md";
-import { useNavigate } from 'react-router-dom'; // Thêm useNavigate
+import { useNavigate } from 'react-router-dom';
 
 const UpNext = () => {
   const [videos, setVideos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Khởi tạo useNavigate
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/movies');
+        const response = await fetch('http://localhost:5000/api/movies?page=1&limit=10');
         if (!response.ok) {
           throw new Error('Không thể tải danh sách phim');
         }
         const data = await response.json();
 
-        // Sắp xếp phim theo createdAt (mới nhất lên đầu)
-        const sortedMovies = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        // Access data.movies instead of data directly
+        const sortedMovies = data.movies.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-        // Lấy 3 phim mới nhất và ánh xạ dữ liệu
         const upNextData = sortedMovies.slice(0, 3).map(movie => ({
-          _id: movie._id, // Giữ _id để chuyển hướng
+          _id: movie._id,
           thumbnail: movie.poster || 'https://via.placeholder.com/150',
-          duration: 'N/A',
+          duration: 'N/A', // Update this if duration is added to the schema
           title: movie.title,
           subtitle: `${movie.director} • ${movie.releaseYear}`,
           likes: movie.ratings ? movie.ratings.length : 0,
@@ -43,25 +42,30 @@ const UpNext = () => {
     fetchMovies();
   }, []);
 
-  // Hàm xử lý chuyển hướng khi nhấn vào phim
   const handleNavigateToDetail = (movieId) => {
     navigate(`/movie/${movieId}`);
   };
 
+  const handleSeeMore = () => {
+    navigate('/movies'); // Navigate to a full movies list page
+  };
+
   return (
-    <div className="bg-[#121212] text-white p-4 rounded-lg w-120 h-[500px]">
+    <div className="bg-[#121212] text-white p-4 rounded-lg w-120 h-[500px] flex flex-col">
       <h2 className="text-lg font-bold mb-4 text-blue-500">Up next</h2>
       {loading ? (
         <p className="text-white">Đang tải phim...</p>
       ) : error ? (
         <p className="text-red-500">{error}</p>
+      ) : videos.length === 0 ? (
+        <p className="text-gray-400">Không có phim nào để hiển thị</p>
       ) : (
-        <div className="space-y-4">
-          {videos.map((video, index) => (
+        <div className="space-y-4 flex-1">
+          {videos.map((video) => (
             <div
-              key={index}
-              className="flex items-center space-x-4 cursor-pointer hover:bg-gray-800 rounded-md p-2 transition" // Thêm hover effect
-              onClick={() => handleNavigateToDetail(video._id)} // Chuyển hướng khi nhấn
+              key={video._id}
+              className="flex items-center space-x-4 cursor-pointer hover:bg-gray-800 rounded-md p-2 transition"
+              onClick={() => handleNavigateToDetail(video._id)}
             >
               <div className="relative w-20 h-28 flex-shrink-0">
                 <img
@@ -90,13 +94,13 @@ const UpNext = () => {
               </div>
             </div>
           ))}
-          <a
-            href="#"
-            className="text-white flex items-center left-2 bottom-0 hover:text-orange-300 cursor-pointer text-xl font-bold"
+          <button
+            onClick={handleSeeMore}
+            className="text-white flex items-center hover:text-orange-300 cursor-pointer text-xl font-bold mt-auto"
           >
             Xem thêm
             <MdOutlineNavigateNext />
-          </a>
+          </button>
         </div>
       )}
     </div>

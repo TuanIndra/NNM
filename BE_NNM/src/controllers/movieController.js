@@ -1,12 +1,24 @@
 const Movie = require("../models/Movie");
 const Genre = require("../models/Genre");
+const Actor = require("../models/Actor");
 
 exports.getMovies = async (req, res) => {
     try {
+        const { page = 1, limit = 10 } = req.query;
         const movies = await Movie.find()
-            .populate("genre", "name") // Lấy tên thể loại thay vì ObjectId
-            .select("title poster actors genre releaseYear ratings director description createdAt bannerImage");
-        res.json(movies);
+            .populate("genre", "name")
+            .populate("actors", "name")
+            .select("title poster actors genre releaseYear ratings director description createdAt bannerImage")
+            .limit(limit * 1)
+            .skip((page - 1) * limit)
+            .sort({ createdAt: -1 });
+
+        const count = await Movie.countDocuments();
+        res.json({
+            movies,
+            totalPages: Math.ceil(count / limit),
+            currentPage: page,
+        });
     } catch (err) {
         res.status(500).json({ message: err.message });
     }
@@ -14,10 +26,11 @@ exports.getMovies = async (req, res) => {
 
 exports.getMovieById = async (req, res) => {
     try {
-        const movie = await Movie.findById(req.params.id).populate("genre", "name");
+        const movie = await Movie.findById(req.params.id)
+            .populate("genre", "name")
+            .populate("actors", "name");
         if (!movie) return res.status(404).json({ message: "Không tìm thấy phim" });
 
-        console.log("Movie data:", movie);
         res.json(movie);
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -26,18 +39,37 @@ exports.getMovieById = async (req, res) => {
 
 exports.addMovie = async (req, res) => {
     try {
-        console.log("Request body:", req.body);
-
         const { title, description, releaseYear, genre, director, actors, poster, trailer, bannerImage } = req.body;
         if (!title || !description || !releaseYear || !genre || !director) {
             return res.status(400).json({ message: "Thiếu thông tin bắt buộc!" });
         }
 
-        // Kiểm tra thể loại có tồn tại không
         const existingGenre = await Genre.findById(genre);
         if (!existingGenre) return res.status(400).json({ message: "Thể loại không hợp lệ!" });
-        const movie = new Movie({ title, description, releaseYear, genre, director, actors, poster, trailer, bannerImage });
+
+        const validActors = await Actor.find({ _id: { $in: actors } });
+        if (validActors.length !== actors.length) {
+            return res.status(400).json({ message: "Một hoặc nhiều diễn viên không hợp lệ!" });
+        }
+
+        const movie = new Movie({
+            title,
+            description,
+            releaseYear,
+            genre,
+            director,
+            actors,
+            poster,
+            trailer,
+            bannerImage,
+        });
         const savedMovie = await movie.save();
+
+        // Cập nhật knownForMovies của các diễn viên
+        await Actor.updateMany(
+            { _id: { $in: actors } },
+            { $addToSet: { knownForMovies: savedMovie._id } } // $addToSet tránh trùng lặp
+        );
 
         res.status(201).json(savedMovie);
     } catch (err) {
@@ -48,21 +80,50 @@ exports.addMovie = async (req, res) => {
 
 exports.updateMovie = async (req, res) => {
     try {
-        console.log("Updating movie:", req.params.id);
-        const { genre } = req.body;
+        const { genre, actors } = req.body;
 
-        // Kiểm tra thể loại có tồn tại không
         if (genre) {
             const existingGenre = await Genre.findById(genre);
             if (!existingGenre) return res.status(400).json({ message: "Thể loại không hợp lệ!" });
         }
 
-        const updatedMovie = await Movie.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true })
-            .populate("genre", "name");
+        const existingMovie = await Movie.findById(req.params.id);
+        if (!existingMovie) return res.status(404).json({ message: "Không tìm thấy phim" });
 
-        if (!updatedMovie) {
-            return res.status(404).json({ message: "Không tìm thấy phim để cập nhật" });
+        if (actors) {
+            const validActors = await Actor.find({ _id: { $in: actors } });
+            if (validActors.length !== actors.length) {
+                return res.status(400).json({ message: "Một hoặc nhiều diễn viên không hợp lệ!" });
+            }
+
+            // Xác định diễn viên bị xóa và thêm
+            const oldActors = existingMovie.actors.map((id) => id.toString());
+            const actorsToRemove = oldActors.filter((id) => !actors.includes(id));
+            const actorsToAdd = actors.filter((id) => !oldActors.includes(id));
+
+            // Xóa movieId khỏi knownForMovies của các diễn viên bị xóa
+            if (actorsToRemove.length > 0) {
+                await Actor.updateMany(
+                    { _id: { $in: actorsToRemove } },
+                    { $pull: { knownForMovies: req.params.id } }
+                );
+            }
+
+            // Thêm movieId vào knownForMovies của các diễn viên mới
+            if (actorsToAdd.length > 0) {
+                await Actor.updateMany(
+                    { _id: { $in: actorsToAdd } },
+                    { $addToSet: { knownForMovies: req.params.id } }
+                );
+            }
         }
+
+        const updatedMovie = await Movie.findByIdAndUpdate(req.params.id, req.body, {
+            new: true,
+            runValidators: true,
+        })
+            .populate("genre", "name")
+            .populate("actors", "name");
 
         res.json(updatedMovie);
     } catch (err) {
@@ -73,12 +134,16 @@ exports.updateMovie = async (req, res) => {
 
 exports.deleteMovie = async (req, res) => {
     try {
-        console.log("Deleting movie:", req.params.id);
         const deletedMovie = await Movie.findByIdAndDelete(req.params.id);
-
         if (!deletedMovie) {
             return res.status(404).json({ message: "Không tìm thấy phim để xóa" });
         }
+
+        // Xóa movieId khỏi knownForMovies của tất cả diễn viên liên quan
+        await Actor.updateMany(
+            { knownForMovies: req.params.id },
+            { $pull: { knownForMovies: req.params.id } }
+        );
 
         res.json({ message: "Xóa phim thành công!" });
     } catch (err) {
@@ -87,7 +152,6 @@ exports.deleteMovie = async (req, res) => {
     }
 };
 
-// Tìm kiếm phim: Tìm theo tiêu đề, thể loại, diễn viên
 exports.searchMovies = async (req, res) => {
     try {
         const { query } = req.query;
@@ -96,18 +160,19 @@ exports.searchMovies = async (req, res) => {
             return res.status(400).json({ message: "Vui lòng nhập từ khóa tìm kiếm." });
         }
 
-        // Lấy danh sách thể loại có tên chứa từ khóa
         const genres = await Genre.find({ name: { $regex: query, $options: "i" } });
-        const genreIds = genres.map(g => g._id); // Lấy danh sách ObjectId của thể loại
+        const genreIds = genres.map((g) => g._id);
 
-        // Tìm kiếm phim theo tiêu đề, diễn viên hoặc thể loại
         const movies = await Movie.find({
             $or: [
                 { title: { $regex: query, $options: "i" } },
-                { actors: { $regex: query, $options: "i" } },
-                { genre: { $in: genreIds } } // Tìm theo danh sách ObjectId của thể loại
-            ]
-        }).populate("genre", "name").select("title poster actors genre ratings");
+                { director: { $regex: query, $options: "i" } },
+                { genre: { $in: genreIds } },
+            ],
+        })
+            .populate("genre", "name")
+            .populate("actors", "name")
+            .select("title poster actors genre ratings");
 
         res.json(movies);
     } catch (err) {

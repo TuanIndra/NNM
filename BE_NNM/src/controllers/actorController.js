@@ -1,7 +1,6 @@
 const Actor = require("../models/Actor");
 const Movie = require("../models/Movie");
 
-// 🟢 Lấy danh sách tất cả diễn viên (kèm danh sách phim)
 exports.getAllActors = async (req, res) => {
     try {
         const actors = await Actor.find().populate("knownForMovies", "title releaseYear");
@@ -11,7 +10,6 @@ exports.getAllActors = async (req, res) => {
     }
 };
 
-// 🟢 Lấy thông tin chi tiết 1 diễn viên theo ID (bao gồm phim)
 exports.getActorById = async (req, res) => {
     try {
         const actor = await Actor.findById(req.params.id).populate("knownForMovies", "title releaseYear genre");
@@ -22,46 +20,77 @@ exports.getActorById = async (req, res) => {
     }
 };
 
-// 🟢 Thêm mới một diễn viên (có thể kèm danh sách phim)
 exports.createActor = async (req, res) => {
     try {
         const { name, birthDate, birthPlace, knownForMovies = [], profileImage } = req.body;
 
-        // Kiểm tra xem các Movie ID có hợp lệ không
-        const validMovies = await Movie.find({ _id: { $in: knownForMovies } });
-        const movieIds = validMovies.map(movie => movie._id);
+        if (!name) {
+            return res.status(400).json({ message: "Tên diễn viên là bắt buộc!" });
+        }
 
-        // Tạo Actor mới
+        // Kiểm tra và lọc các Movie ID hợp lệ
+        const validMovies = await Movie.find({ _id: { $in: knownForMovies } });
+        const movieIds = validMovies.map((movie) => movie._id.toString());
+
         const newActor = new Actor({
             name,
             birthDate,
             birthPlace,
             knownForMovies: movieIds,
-            profileImage  // ✅ Thêm profileImage vào đây
+            profileImage,
         });
 
         const savedActor = await newActor.save();
-        res.status(201).json(savedActor);  // ✅ Trả về status 201 khi thành công
+
+        // Cập nhật actors của các phim
+        await Movie.updateMany(
+            { _id: { $in: movieIds } },
+            { $addToSet: { actors: savedActor._id } }
+        );
+
+        res.status(201).json(savedActor);
     } catch (error) {
-        res.status(400).json({ message: "Lỗi khi thêm diễn viên", error });  // ✅ Sửa lại thành res.status(400)
+        console.error("Error adding actor:", error);
+        res.status(400).json({ message: "Lỗi khi thêm diễn viên", error });
     }
 };
 
-
-// 🟢 Cập nhật thông tin diễn viên theo ID
 exports.updateActor = async (req, res) => {
     try {
         const { name, birthDate, birthPlace, knownForMovies, profileImage } = req.body;
 
-        // Lấy diễn viên hiện tại để giữ nguyên profileImage nếu không có ảnh mới
         const existingActor = await Actor.findById(req.params.id);
         if (!existingActor) return res.status(404).json({ message: "Không tìm thấy diễn viên" });
 
-        // Nếu có cập nhật danh sách phim, kiểm tra Movie ID hợp lệ
-        let movieIds = existingActor.knownForMovies;
+        if (!name) {
+            return res.status(400).json({ message: "Tên diễn viên là bắt buộc!" });
+        }
+
+        let movieIds = existingActor.knownForMovies.map((id) => id.toString());
         if (knownForMovies) {
             const validMovies = await Movie.find({ _id: { $in: knownForMovies } });
-            movieIds = validMovies.map(movie => movie._id);
+            movieIds = validMovies.map((movie) => movie._id.toString());
+
+            // Xác định phim bị xóa và thêm
+            const oldMovies = existingActor.knownForMovies.map((id) => id.toString());
+            const moviesToRemove = oldMovies.filter((id) => !movieIds.includes(id));
+            const moviesToAdd = movieIds.filter((id) => !oldMovies.includes(id));
+
+            // Xóa actorId khỏi actors của các phim bị xóa
+            if (moviesToRemove.length > 0) {
+                await Movie.updateMany(
+                    { _id: { $in: moviesToRemove } },
+                    { $pull: { actors: req.params.id } }
+                );
+            }
+
+            // Thêm actorId vào actors của các phim mới
+            if (moviesToAdd.length > 0) {
+                await Movie.updateMany(
+                    { _id: { $in: moviesToAdd } },
+                    { $addToSet: { actors: req.params.id } }
+                );
+            }
         }
 
         const updatedActor = await Actor.findByIdAndUpdate(
@@ -70,25 +99,33 @@ exports.updateActor = async (req, res) => {
                 name,
                 birthDate,
                 birthPlace,
-                profileImage: profileImage || existingActor.profileImage,  // ✅ Giữ nguyên nếu không có ảnh mới
-                knownForMovies: movieIds
+                profileImage: profileImage || existingActor.profileImage,
+                knownForMovies: movieIds,
             },
             { new: true }
-        );
+        ).populate("knownForMovies", "title releaseYear");
 
         res.status(200).json(updatedActor);
     } catch (error) {
+        console.error("Error updating actor:", error);
         res.status(400).json({ message: "Lỗi khi cập nhật diễn viên", error });
     }
 };
 
-// 🟢 Xóa diễn viên theo ID
 exports.deleteActor = async (req, res) => {
     try {
         const deletedActor = await Actor.findByIdAndDelete(req.params.id);
         if (!deletedActor) return res.status(404).json({ message: "Không tìm thấy diễn viên" });
+
+        // Xóa actorId khỏi actors của tất cả phim liên quan
+        await Movie.updateMany(
+            { actors: req.params.id },
+            { $pull: { actors: req.params.id } }
+        );
+
         res.status(200).json({ message: "Xóa diễn viên thành công" });
     } catch (error) {
+        console.error("Error deleting actor:", error);
         res.status(500).json({ message: "Lỗi khi xóa diễn viên", error });
     }
 };
