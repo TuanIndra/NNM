@@ -28,7 +28,7 @@ const ActorDetail = () => {
                         <KnownFor />
                         <ActorMovies></ActorMovies>
                         <VideoGallery></VideoGallery>
-                        <div className="lg:w-[856px] w-full ml-5 bg-white mb-10">
+                        <div className="lg:w-[856px] w-full bg-white mb-10">
                             <FeaturedVideos />
                         </div>
                     </div>
