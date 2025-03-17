@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar';
-import { IoIosArrowForward } from "react-icons/io";
 import FeaturedVideos from '../Utils/FeaturedVideo';
+import { FaStar } from 'react-icons/fa';
+import { toast } from 'react-toastify'; // Thêm import toast
+import 'react-toastify/dist/ReactToastify.css';
 
 const TrailerPage = () => {
     const { id } = useParams();  // Lấy ID từ URL
@@ -10,17 +12,29 @@ const TrailerPage = () => {
     const [movie, setMovie] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [userRating, setUserRating] = useState(0);
+    const [hoverRating, setHoverRating] = useState(0);
+
+    // Lấy token từ localStorage
+    const token = localStorage.getItem("token");
+    const user = JSON.parse(localStorage.getItem("user"));
 
     useEffect(() => {
         const fetchMovie = async () => {
             try {
-                const response = await fetch(`http://localhost:5000/api/movies/${id}`);
+                const response = await fetch(`http://localhost:5000/api/movies/${id}`, {
+                    headers: token ? { Authorization: `Bearer ${token}` } : {},
+                });
                 if (!response.ok) {
                     throw new Error('Không thể tải dữ liệu phim');
                 }
                 const data = await response.json();
                 console.log('Fetched movie:', data); // Debug dữ liệu
                 setMovie(data);
+                if (user && token) {
+                    const existingRating = data.ratings.find(r => r.userId === user._id); // Dùng _id nếu có
+                    if (existingRating) setUserRating(existingRating.rating);
+                }
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -28,7 +42,34 @@ const TrailerPage = () => {
             }
         };
         fetchMovie();
-    }, [id]);
+    }, [id, token, user]);
+
+    // Xử lý gửi rating lên server
+    const handleRating = async (rating) => {
+        if (!token) {
+            toast.error('Vui lòng đăng nhập để đánh giá!');
+            return navigate('/login');
+        }
+
+        try {
+            const response = await fetch(`http://localhost:5000/api/movies/${id}/rate`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`, // Gửi token để xác thực
+                },
+                body: JSON.stringify({ userId: user ? user._id : null, rating }), // user._id nếu có
+            });
+
+            if (!response.ok) throw new Error('Không thể gửi đánh giá');
+            const updatedMovie = await response.json();
+            setMovie(updatedMovie);
+            setUserRating(rating);
+            toast.success('Đánh giá thành công!');
+        } catch (err) {
+            toast.error(err.message);
+        }
+    };
 
     if (loading) return <p className="text-white">Đang tải...</p>;
     if (error) return <p className="text-red-500">{error}</p>;
@@ -85,17 +126,35 @@ const TrailerPage = () => {
                                 : "Không có diễn viên"}
                         </p>
                         <p className="text-gray-400 mt-1"><strong>Năm phát hành:</strong> {movie.releaseYear}</p>
-                        <p className="text-gray-400 mt-1">
-                            <strong>Đánh giá:</strong> {calculateAverageRating()} 
-                            {Array.isArray(movie.ratings) && movie.ratings.length > 0 
-                                ? ` (${movie.ratings.length} lượt)` 
-                                : ""}
-                        </p>
+                        <div className="mt-4">
+                            <span className="text-gray-400"><strong>Đánh giá trung bình:</strong> </span>
+                            <span className="text-yellow-400">{calculateAverageRating()} / 10</span>
+                            <span className="text-gray-400"> ({movie.ratings.length} lượt)</span>
+                        </div>
+
+                        <div className="mt-4">
+                            <span className="text-gray-400">
+                                <strong>Đánh giá của bạn:</strong>
+                            </span>
+                            <div className="flex space-x-1 mt-2">
+                                {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((star) => (
+                                    <FaStar
+                                        key={star}
+                                        size={24}
+                                        className={`cursor-pointer transition-colors ${(hoverRating || userRating) >= star ? "text-yellow-400" : "text-gray-600"
+                                            }`}
+                                        onClick={() => handleRating(star)}
+                                        onMouseEnter={() => setHoverRating(star)}
+                                        onMouseLeave={() => setHoverRating(0)}
+                                    />
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div>
-                    <FeaturedVideos />
-                </div>
+            </div>
+            <div>
+                <FeaturedVideos />
             </div>
         </div>
     );
