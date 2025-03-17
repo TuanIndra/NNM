@@ -1,17 +1,8 @@
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
+import MediaButtons from "./MediaButtons";
 
 const ActorInfo = () => {
     const [expanded, setExpanded] = useState(false);
-    const [height, setHeight] = useState("700px"); // Chiều cao ban đầu
-    const textRef = useRef(null);
-
-    useEffect(() => {
-        if (expanded) {
-            setHeight(`700+ 400}px`); // Mở rộng khi bấm "Xem thêm"
-        } else {
-            setHeight("700px"); // Giữ nguyên khi thu gọn
-        }
-    }, [expanded]);
 
     const actor = {
         name: "Tom Cruise",
@@ -19,7 +10,7 @@ const ActorInfo = () => {
         birthPlace:
             "In 1976, if you had told fourteen-year-old Franciscan seminary student Thomas Cruise Mapother IV that one day in the not too distant future he would be Tom Cruise, one of the top 100 movie stars of all time, he would have probably grinned and told you that his ambition was to join the priesthood. Nonetheless, this sensitive, deeply religious youngster who was born in 1962 in Syracuse, New York, was destined to become one of the highest paid and most sought after actors in screen history...",
         profileImage:
-            "https://images2.thanhnien.vn/528068263637045248/2024/11/28/5-1732774990424925790598.jpg",
+            "https://upload.wikimedia.org/wikipedia/commons/1/12/Tom_Cruise_%2848364137131%29_%28cropped%29.jpg",
         knownForMovies: [
             {
                 _id: "1",
@@ -31,15 +22,15 @@ const ActorInfo = () => {
     };
 
     return (
-        <div className="relative text-white overflow-hidden transition-all duration-500" style={{ height }}>
-            {/* 🔹 Background tự động điều chỉnh chiều cao */}
+        <div className="flex relative text-white overflow-hidden transition-all duration-500 justify-center min-h-[700px] h-auto">
+            {/* 🔹 Background tự động mở rộng */}
             <div className="absolute inset-0 w-full bg-gradient-to-r from-gray-700 via-gray-600 to-gray-800 opacity-60 -z-10"></div>
 
             {/* 🔹 Nội dung */}
-            <div className="relative z-10 p-10">
-                <h1 className="text-5xl font-bold ml-24">{actor.name}</h1>
+            <div className="relative z-10 p-10 mt-10 ml-5 mr-5">
+                <h1 className="text-5xl font-bold ml-25">{actor.name}</h1>
 
-                <div className="flex flex-row items-start space-x-6 mt-4">
+                <div className="flex flex-row space-x-6 mt-4">
                     {/* 🔹 Ảnh diễn viên */}
                     <img
                         src={actor.profileImage}
@@ -48,7 +39,7 @@ const ActorInfo = () => {
                     />
 
                     {/* 🔹 Video */}
-                    <div className="w-[737px] h-[414px] aspect-video mt-4 rounded-lg shadow-xl overflow-hidden">
+                    <div className="w-[737px] h-[414px] aspect-video mt-4 rounded-lg shadow-xl overflow-hidden ml-0.5">
                         <iframe
                             className="w-full h-full"
                             src={`https://www.youtube.com/embed/${actor.knownForMovies[0].trailer}?autoplay=1&mute=1`}
@@ -57,15 +48,16 @@ const ActorInfo = () => {
                             allowFullScreen
                         ></iframe>
                     </div>
+
+                    <MediaButtons />
                 </div>
 
                 {/* 🔹 Thông tin diễn viên */}
                 <div className="flex flex-row">
                     <div className="max-w-[650px] text-gray-300 ml-24 mt-4">
                         <p
-                            ref={textRef}
-                            className={`text-lg leading-6 transition-all duration-300 ${
-                                expanded ? "line-clamp-none" : "line-clamp-3"
+                            className={`text-lg leading-6 transition-all duration-500 ${
+                                expanded ? "max-h-[500px]" : "max-h-[72px] overflow-hidden"
                             }`}
                         >
                             {actor.birthPlace}
@@ -77,7 +69,9 @@ const ActorInfo = () => {
                             {expanded ? "Thu gọn" : "Xem thêm"}
                         </button>
                     </div>
-                    <p className="text-lg text-gray-300 ml-15 text-left">Born: {actor.birthDate}</p>
+                    <p className="text-center text-gray-300 ml-15 justify-between">
+                        Born: {actor.birthDate}
+                    </p>
                 </div>
             </div>
         </div>
