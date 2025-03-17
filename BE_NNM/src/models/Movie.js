@@ -4,7 +4,7 @@ const MovieSchema = new mongoose.Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
     releaseYear: { type: Number, required: true },
-    genre: { type: mongoose.Schema.Types.ObjectId, ref: "Genre", required: true }, // Liên kết với Genre
+    genre: [{ type: mongoose.Schema.Types.ObjectId, ref: "Genre", required: true }], // Liên kết với Genre
     director: { type: String, required: true },
     actors: [{ type: String }],
     poster: { type: String, required: true },
