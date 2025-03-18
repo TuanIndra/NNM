@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Navbar from "../Navbar/Navbar";
+import Navbar from "../../Navbar/Navbar";
 
 export default function RegisterForm() {
   const [formData, setFormData] = useState({
