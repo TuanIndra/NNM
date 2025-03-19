@@ -43,7 +43,7 @@ const App = () => {
         draggable 
       />
       <Routes>
-      <Route path="/actor" element={<ActorDetail />} />
+        <Route path="/actor/:id" element={<ActorDetail />} />
         <Route path='/' element={<Navigate to='/home' />} />
         <Route path="/home" element={<HomePage />} />
         <Route path="/register" element={<SignupForm />} />

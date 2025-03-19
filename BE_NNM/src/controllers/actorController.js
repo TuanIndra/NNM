@@ -16,7 +16,6 @@ exports.getActorById = async (req, res) => {
         const actor = await Actor.findById(req.params.id)
             .populate("knownForMovies", "title releaseYear genre");
         if (!actor) return res.status(404).json({ message: "Không tìm thấy diễn viên" });
-
         res.status(200).json(actor);
     } catch (error) {
         res.status(500).json({ message: "Lỗi khi lấy thông tin diễn viên", error });
