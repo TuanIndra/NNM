@@ -1,5 +1,5 @@
 import { useState } from "react";
-import Navbar from '../Navbar/Navbar'
+import Navbar from '../../Navbar/Navbar'
 import{useNavigate,useLocation} from "react-router-dom"
 import { toast } from "react-toastify";
 const LoginPage = () => {

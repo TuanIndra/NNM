@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import Navbar from "../Navbar/Navbar";
+import Navbar from "../../Navbar/Navbar";
 
 const WatchlistMoviesPage = () => {
     const { id } = useParams(); // Lấy ID watchlist từ URL
@@ -59,7 +59,7 @@ const WatchlistMoviesPage = () => {
 
     return (
         <div>
-            <Navbar />
+            <Navbar></Navbar>
             <div className="min-h-screen bg-gray-900 text-white">
                 <div className="max-w-6xl mx-auto p-6">
                     <h1 className="text-3xl font-bold">{watchlistName}</h1>

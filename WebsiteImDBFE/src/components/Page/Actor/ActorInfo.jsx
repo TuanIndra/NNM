@@ -1,5 +1,6 @@
 import { useState } from "react";
 import MediaButtons from "./MediaButtons";
+import Button from "../../Utils/Button";
 
 const ActorInfo = () => {
     const [expanded, setExpanded] = useState(false);
@@ -54,11 +55,10 @@ const ActorInfo = () => {
 
                 {/* 🔹 Thông tin diễn viên */}
                 <div className="flex flex-row">
-                    <div className="max-w-[650px] text-gray-300 ml-24 mt-4">
+                    <div className="max-w-[813px] text-white ml-24 mt-4">
                         <p
-                            className={`text-lg leading-6 transition-all duration-500 ${
-                                expanded ? "max-h-[500px]" : "max-h-[72px] overflow-hidden"
-                            }`}
+                            className={`text-lg leading-6 transition-all duration-500 ${expanded ? "max-h-[500px]" : "max-h-[72px] overflow-hidden"
+                                }`}
                         >
                             {actor.birthPlace}
                         </p>
@@ -69,9 +69,16 @@ const ActorInfo = () => {
                             {expanded ? "Thu gọn" : "Xem thêm"}
                         </button>
                     </div>
-                    <p className="text-center text-gray-300 ml-15 justify-between">
-                        Born: {actor.birthDate}
-                    </p>
+                    <div className="flex flex-col">
+                        <p className="text-start text-white ml-15 justify-between mt-5">
+                            Born: {actor.birthDate}
+                        </p>
+                        <div className="ml-24 w-[358px] h-[48px] justify-start mt-4">
+                            <Button></Button>
+                        </div>
+
+                    </div>
+
                 </div>
             </div>
         </div>
