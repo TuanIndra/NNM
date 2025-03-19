@@ -8,9 +8,7 @@ const ActorInfo = ({ actor }) => {
     // Hàm trích xuất YouTube ID từ URL hoặc ID
     const getYouTubeId = (trailer) => {
         if (!trailer) return null;
-        // Nếu đã là ID (không chứa "watch?v=" hoặc "youtu.be"), trả về ngay
         if (!trailer.includes("watch?v=") && !trailer.includes("youtu.be")) return trailer;
-        // Trích xuất ID từ URL
         const match = trailer.match(/(?:v=|youtu\.be\/)([^&?]+)/);
         return match ? match[1] : null;
     };
@@ -27,6 +25,16 @@ const ActorInfo = ({ actor }) => {
     const trailerId = getRandomTrailer();
     const embedUrl = trailerId ? `https://www.youtube.com/embed/${trailerId}?autoplay=1&mute=1` : null;
 
+    // Hàm cắt ngắn description
+    const truncateText = (text, maxLength) => {
+        if (!text || text.length <= maxLength) return text;
+        return text.substring(0, maxLength) + "...";
+    };
+
+    // Giá trị hiển thị cho description
+    const descriptionText = actor?.description || "No description available";
+    const shortDescription = truncateText(descriptionText, 100); // Cắt ngắn thành 100 ký tự
+
     return (
         <div className="flex relative text-white overflow-hidden transition-all duration-500 justify-center min-h-[700px] h-auto">
             {/* Gradient background */}
@@ -42,7 +50,7 @@ const ActorInfo = ({ actor }) => {
                         src={actor?.profileImage || "https://placehold.co/278x414"}
                         alt={actor?.name || "Actor"}
                         className="w-[278px] h-[414px] rounded-2xl mt-4 ml-24"
-                        onError={(e) => (e.target.src = "https://placehold.co/278x414")} // Fallback nếu ảnh lỗi
+                        onError={(e) => (e.target.src = "https://placehold.co/278x414")}
                     />
 
                     {/* Trailer video */}
@@ -55,12 +63,11 @@ const ActorInfo = ({ actor }) => {
                                 allow="autoplay; encrypted-media"
                                 allowFullScreen
                                 onError={(e) => {
-                                    e.target.style.display = "none"; // Ẩn iframe nếu lỗi
-                                    e.target.nextSibling.style.display = "flex"; // Hiển thị placeholder
+                                    e.target.style.display = "none";
+                                    e.target.nextSibling.style.display = "flex";
                                 }}
                             ></iframe>
                         ) : null}
-                        {/* Placeholder hiển thị khi không có trailer hoặc lỗi */}
                         <div
                             className="w-full h-full bg-gray-500 flex items-center justify-center"
                             style={{ display: embedUrl ? "none" : "flex" }}
@@ -79,14 +86,16 @@ const ActorInfo = ({ actor }) => {
                         <p
                             className={`text-lg leading-6 transition-all duration-500 ${expanded ? "max-h-[500px]" : "max-h-[72px] overflow-hidden"}`}
                         >
-                            {actor?.birthPlace || "No biography available"}
+                            {expanded ? descriptionText : shortDescription}
                         </p>
-                        <button
-                            onClick={() => setExpanded(!expanded)}
-                            className="text-yellow-500 mt-2"
-                        >
-                            {expanded ? "Thu gọn" : "Xem thêm"}
-                        </button>
+                        {descriptionText.length > 100 && (
+                            <button
+                                onClick={() => setExpanded(!expanded)}
+                                className="text-yellow-500 mt-2"
+                            >
+                                {expanded ? "Thu gọn" : "Xem thêm"}
+                            </button>
+                        )}
                     </div>
 
                     {/* Thông tin bổ sung */}
