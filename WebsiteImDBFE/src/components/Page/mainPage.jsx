@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import SampleVideo from "../../assets/sample.mp4";
-import UpNext from "./UpNext";
+import UpNext from "./upNext";
 import Slider from "./../Utils/Slider";
 import Banner from "../Utils/Banner";
 import MovieSlider from "../Utils/MovieSlider";

@@ -2,65 +2,84 @@ import { useState } from "react";
 import MediaButtons from "./MediaButtons";
 import Button from "../../Utils/Button";
 
-const ActorInfo = () => {
+const ActorInfo = ({ actor }) => {
     const [expanded, setExpanded] = useState(false);
 
-    const actor = {
-        name: "Tom Cruise",
-        birthDate: "1962-07-03",
-        birthPlace:
-            "In 1976, if you had told fourteen-year-old Franciscan seminary student Thomas Cruise Mapother IV that one day in the not too distant future he would be Tom Cruise, one of the top 100 movie stars of all time, he would have probably grinned and told you that his ambition was to join the priesthood. Nonetheless, this sensitive, deeply religious youngster who was born in 1962 in Syracuse, New York, was destined to become one of the highest paid and most sought after actors in screen history...",
-        profileImage:
-            "https://upload.wikimedia.org/wikipedia/commons/1/12/Tom_Cruise_%2848364137131%29_%28cropped%29.jpg",
-        knownForMovies: [
-            {
-                _id: "1",
-                title: "Mission: Impossible – Dead Reckoning Part One",
-                releaseYear: 2023,
-                trailer: "avz06PDqDbM",
-            },
-        ],
+    // Hàm trích xuất YouTube ID từ URL hoặc ID
+    const getYouTubeId = (trailer) => {
+        if (!trailer) return null;
+        // Nếu đã là ID (không chứa "watch?v=" hoặc "youtu.be"), trả về ngay
+        if (!trailer.includes("watch?v=") && !trailer.includes("youtu.be")) return trailer;
+        // Trích xuất ID từ URL
+        const match = trailer.match(/(?:v=|youtu\.be\/)([^&?]+)/);
+        return match ? match[1] : null;
     };
+
+    // Chọn ngẫu nhiên một trailer từ knownForMovies
+    const getRandomTrailer = () => {
+        const moviesWithTrailers = actor?.knownForMovies?.filter(movie => movie.trailer) || [];
+        if (moviesWithTrailers.length === 0) return null;
+        const randomIndex = Math.floor(Math.random() * moviesWithTrailers.length);
+        return getYouTubeId(moviesWithTrailers[randomIndex].trailer);
+    };
+
+    // Lấy trailer ngẫu nhiên
+    const trailerId = getRandomTrailer();
+    const embedUrl = trailerId ? `https://www.youtube.com/embed/${trailerId}?autoplay=1&mute=1` : null;
 
     return (
         <div className="flex relative text-white overflow-hidden transition-all duration-500 justify-center min-h-[700px] h-auto">
-            {/* 🔹 Background tự động mở rộng */}
+            {/* Gradient background */}
             <div className="absolute inset-0 w-full bg-gradient-to-r from-gray-700 via-gray-600 to-gray-800 opacity-60 -z-10"></div>
 
-            {/* 🔹 Nội dung */}
             <div className="relative z-10 p-10 mt-10 ml-5 mr-5">
-                <h1 className="text-5xl font-bold ml-25">{actor.name}</h1>
+                {/* Tên diễn viên */}
+                <h1 className="text-5xl font-bold ml-25">{actor?.name || "Unknown Actor"}</h1>
 
                 <div className="flex flex-row space-x-6 mt-4">
-                    {/* 🔹 Ảnh diễn viên */}
+                    {/* Ảnh đại diện của diễn viên */}
                     <img
-                        src={actor.profileImage}
-                        alt={actor.name}
+                        src={actor?.profileImage || "https://placehold.co/278x414"}
+                        alt={actor?.name || "Actor"}
                         className="w-[278px] h-[414px] rounded-2xl mt-4 ml-24"
+                        onError={(e) => (e.target.src = "https://placehold.co/278x414")} // Fallback nếu ảnh lỗi
                     />
 
-                    {/* 🔹 Video */}
+                    {/* Trailer video */}
                     <div className="w-[737px] h-[414px] aspect-video mt-4 rounded-lg shadow-xl overflow-hidden ml-0.5">
-                        <iframe
-                            className="w-full h-full"
-                            src={`https://www.youtube.com/embed/${actor.knownForMovies[0].trailer}?autoplay=1&mute=1`}
-                            title="Latest Trailer"
-                            allow="autoplay; encrypted-media"
-                            allowFullScreen
-                        ></iframe>
+                        {embedUrl ? (
+                            <iframe
+                                className="w-full h-full"
+                                src={embedUrl}
+                                title="Random Movie Trailer"
+                                allow="autoplay; encrypted-media"
+                                allowFullScreen
+                                onError={(e) => {
+                                    e.target.style.display = "none"; // Ẩn iframe nếu lỗi
+                                    e.target.nextSibling.style.display = "flex"; // Hiển thị placeholder
+                                }}
+                            ></iframe>
+                        ) : null}
+                        {/* Placeholder hiển thị khi không có trailer hoặc lỗi */}
+                        <div
+                            className="w-full h-full bg-gray-500 flex items-center justify-center"
+                            style={{ display: embedUrl ? "none" : "flex" }}
+                        >
+                            <p className="text-white">No trailer available or video unavailable</p>
+                        </div>
                     </div>
 
-                    <MediaButtons />
+                    {/* Media buttons */}
+                    <MediaButtons photosCount={actor?.photos?.length || 0} />
                 </div>
 
-                {/* 🔹 Thông tin diễn viên */}
                 <div className="flex flex-row">
+                    {/* Biography */}
                     <div className="max-w-[813px] text-white ml-24 mt-4">
                         <p
-                            className={`text-lg leading-6 transition-all duration-500 ${expanded ? "max-h-[500px]" : "max-h-[72px] overflow-hidden"
-                                }`}
+                            className={`text-lg leading-6 transition-all duration-500 ${expanded ? "max-h-[500px]" : "max-h-[72px] overflow-hidden"}`}
                         >
-                            {actor.birthPlace}
+                            {actor?.birthPlace || "No biography available"}
                         </p>
                         <button
                             onClick={() => setExpanded(!expanded)}
@@ -69,16 +88,16 @@ const ActorInfo = () => {
                             {expanded ? "Thu gọn" : "Xem thêm"}
                         </button>
                     </div>
+
+                    {/* Thông tin bổ sung */}
                     <div className="flex flex-col">
                         <p className="text-start text-white ml-15 justify-between mt-5">
-                            Born: {actor.birthDate}
+                            Born: {actor?.birthDate ? new Date(actor.birthDate).toLocaleDateString() : "Unknown"}
                         </p>
                         <div className="ml-24 w-[358px] h-[48px] justify-start mt-4">
-                            <Button></Button>
+                            <Button />
                         </div>
-
                     </div>
-
                 </div>
             </div>
         </div>
