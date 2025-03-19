@@ -4,7 +4,7 @@ const Actor = require("../models/Actor");
 
 exports.getMovies = async (req, res) => {
     try {
-        const { page = 1, limit = 10 } = req.query;
+        const { page = 1, limit = 100 } = req.query;
         const movies = await Movie.find()
             .populate("genre", "name") // Populate mảng genre
             .populate("actors", "name")
