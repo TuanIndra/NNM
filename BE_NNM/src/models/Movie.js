@@ -9,6 +9,7 @@ const MovieSchema = new mongoose.Schema({
     actors: [{ type: mongoose.Schema.Types.ObjectId, ref: "Actor" }],
     poster: { type: String, required: true, trim: true },
     trailer: { type: String, trim: true },
+    theatricalReleaseDate: { type: Date, trim: true },
     ratings: [{ userId: String, rating: { type: Number, min: 1, max: 10 } }],
     comments: [{ userId: String, comment: String, date: { type: Date, default: Date.now } }],
     createdAt: { type: Date, default: Date.now },

@@ -92,6 +92,14 @@ const MovieModal = ({
               className="border p-2 rounded"
             />
             <input
+              type="date"
+              name="theatricalReleaseDate"
+              placeholder="Ngày chiếu rạp"
+              value={movieData.theatricalReleaseDate ? new Date(movieData.theatricalReleaseDate).toISOString().split("T")[0] : ""}
+              onChange={handleInputChange}
+              className="border p-2 rounded"
+            />
+            <input
               type="text"
               name="bannerImage"
               placeholder="URL Banner Image"
