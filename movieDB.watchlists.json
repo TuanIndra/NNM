@@ -1,0 +1,65 @@
+[{
+  "_id": {
+    "$oid": "67cdd8216a8b6022001419e9"
+  },
+  "name": "a",
+  "description": "a",
+  "user": {
+    "$oid": "67c565f6474898dbfe31d1a6"
+  },
+  "movies": [],
+  "createdAt": {
+    "$date": "2025-03-09T18:04:17.483Z"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "67d13cdcd3c8d6c5c9fdf340"
+  },
+  "name": "Watchlist mặc định",
+  "description": "Watchlist được tạo tự động",
+  "user": {
+    "$oid": "67c565fb474898dbfe31d1a9"
+  },
+  "movies": [
+    {
+      "$oid": "67c54e17c2558e7c0e905434"
+    },
+    {
+      "$oid": "67cdcce4b8d4a6ce3067e7df"
+    },
+    {
+      "$oid": "67cdcdf1b8d4a6ce3067e7e2"
+    },
+    {
+      "$oid": "67cdce04b8d4a6ce3067e7e4"
+    },
+    {
+      "$oid": "67cdcea9b8d4a6ce3067e7ea"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-03-12T07:50:52.059Z"
+  },
+  "__v": 5
+},
+{
+  "_id": {
+    "$oid": "67d1475dd3c8d6c5c9fdf70b"
+  },
+  "name": "a",
+  "description": "a",
+  "user": {
+    "$oid": "67c565fb474898dbfe31d1a9"
+  },
+  "movies": [
+    {
+      "$oid": "67c54e17c2558e7c0e905434"
+    }
+  ],
+  "createdAt": {
+    "$date": "2025-03-12T08:35:41.993Z"
+  },
+  "__v": 1
+}]

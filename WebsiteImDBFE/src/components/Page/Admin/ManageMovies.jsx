@@ -130,6 +130,7 @@ const ManageMovies = () => {
       actors: [],
       poster: "",
       trailer: "",
+      theatricalReleaseDate: "",
       bannerImage: "",
     });
     setSelectedActors([]);
@@ -154,6 +155,7 @@ const ManageMovies = () => {
       actors: initialActors,
       poster: movie.poster || "",
       trailer: movie.trailer || "",
+      theatricalReleaseDate: movie.theatricalReleaseDate || "",
       bannerImage: movie.bannerImage || "",
     });
     setSelectedActors(initialActors);

@@ -8,7 +8,7 @@ exports.getMovies = async (req, res) => {
         const movies = await Movie.find()
             .populate("genre", "name") // Populate mảng genre
             .populate("actors", "name")
-            .select("title poster actors genre releaseYear ratings director description createdAt bannerImage")
+            .select("title poster actors genre releaseYear theatricalReleaseDate ratings director description createdAt bannerImage")
             .limit(limit * 1)
             .skip((page - 1) * limit)
             .sort({ createdAt: -1 });
@@ -39,7 +39,7 @@ exports.getMovieById = async (req, res) => {
 
 exports.addMovie = async (req, res) => {
     try {
-        const { title, description, releaseYear, genre, director, actors, poster, trailer, bannerImage } = req.body;
+        const { title, description, releaseYear, genre, director, actors, poster, trailer, bannerImage, theatricalReleaseDate } = req.body;
         if (!title || !description || !releaseYear || !genre || !director) {
             return res.status(400).json({ message: "Thiếu thông tin bắt buộc!" });
         }
@@ -59,12 +59,13 @@ exports.addMovie = async (req, res) => {
             title,
             description,
             releaseYear,
-            genre, // genre giờ là mảng
+            genre,
             director,
             actors,
             poster,
             trailer,
             bannerImage,
+            theatricalReleaseDate,
         });
         const savedMovie = await movie.save();
 
