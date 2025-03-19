@@ -16,9 +16,10 @@ const ManageActor = () => {
     actorName: "",
     birthDate: "",
     birthPlace: "",
+    description: "", // Thêm description vào formData
     profileImage: "",
     knownForMovies: [],
-    photos: [], // Thêm photos vào formData
+    photos: [],
   });
   const [editingActor, setEditingActor] = useState(null);
   const [showModal, setShowModal] = useState(false);
@@ -42,7 +43,6 @@ const ManageActor = () => {
     fetchInitialData();
   }, []);
 
-  // Fetch actors from API
   const fetchActors = useCallback(async () => {
     try {
       const response = await fetch(ACTORS_API_URL);
@@ -55,7 +55,6 @@ const ManageActor = () => {
     }
   }, []);
 
-  // Fetch movies from API
   const fetchMovies = useCallback(async () => {
     try {
       const response = await fetch(MOVIES_API_URL);
@@ -68,27 +67,25 @@ const ManageActor = () => {
     }
   }, []);
 
-  // Reset form to initial state
   const resetForm = useCallback(() => {
     setFormData({
       actorName: "",
       birthDate: "",
       birthPlace: "",
+      description: "", // Reset description
       profileImage: "",
       knownForMovies: [],
-      photos: [], // Reset photos
+      photos: [],
     });
     setEditingActor(null);
     setSelectedMovies([]);
     setShowModal(false);
   }, []);
 
-  // Handle form field changes
   const handleFormChange = (field) => (value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  // Save actor (create or update)
   const handleSaveActor = async () => {
     if (!formData.actorName.trim()) {
       toast.error("Tên diễn viên không được để trống!");
@@ -99,9 +96,10 @@ const ManageActor = () => {
       name: formData.actorName,
       birthDate: formData.birthDate ? formData.birthDate.split("T")[0] : "",
       birthPlace: formData.birthPlace,
+      description: formData.description, // Thêm description vào dữ liệu gửi lên API
       profileImage: formData.profileImage,
       knownForMovies: formData.knownForMovies.map(String),
-      photos: formData.photos, // Thêm photos vào dữ liệu gửi lên API
+      photos: formData.photos,
     };
 
     try {
@@ -128,7 +126,6 @@ const ManageActor = () => {
     }
   };
 
-  // Delete actor
   const handleDeleteActor = async (id) => {
     if (!window.confirm("Bạn có chắc chắn muốn xóa diễn viên này?")) return;
 
@@ -143,24 +140,23 @@ const ManageActor = () => {
     }
   };
 
-  // Open modal for adding new actor
   const openAddModal = () => {
     resetForm();
     setShowModal(true);
   };
 
-  // Open modal for editing existing actor
   const openEditModal = (actor) => {
     setEditingActor(actor);
     setFormData({
       actorName: actor.name,
       birthDate: actor.birthDate ? actor.birthDate.split("T")[0] : "",
       birthPlace: actor.birthPlace || "",
+      description: actor.description || "", // Load description từ actor
       profileImage: actor.profileImage || "",
       knownForMovies: actor.knownForMovies?.map((movie) => 
         typeof movie === "string" ? movie : movie._id.toString()
       ) || [],
-      photos: actor.photos || [], // Load photos từ actor
+      photos: actor.photos || [],
     });
     setSelectedMovies(
       actor.knownForMovies?.map((movie) => 
@@ -170,20 +166,17 @@ const ManageActor = () => {
     setShowModal(true);
   };
 
-  // Handle movie selection toggle
   const handleMovieSelection = (movieId) => {
     setSelectedMovies((prev) =>
       prev.includes(movieId) ? prev.filter((id) => id !== movieId) : [...prev, movieId]
     );
   };
 
-  // Save selected movies to form data
   const handleSaveMovies = () => {
     setFormData((prev) => ({ ...prev, knownForMovies: selectedMovies }));
     setShowMovieModal(false);
   };
 
-  // Get movie titles from IDs or objects
   const getMovieTitlesByIds = useCallback((movieData) => {
     if (!Array.isArray(movieData) || movieData.length === 0) return "N/A";
 
@@ -196,7 +189,6 @@ const ManageActor = () => {
     return movieTitles.join(", ") || "Không có phim";
   }, [movies]);
 
-  // Handle adding a new photo URL
   const handleAddPhoto = (photoUrl) => {
     if (photoUrl && !formData.photos.includes(photoUrl)) {
       setFormData((prev) => ({
@@ -206,7 +198,6 @@ const ManageActor = () => {
     }
   };
 
-  // Handle removing a photo URL
   const handleRemovePhoto = (photoUrl) => {
     setFormData((prev) => ({
       ...prev,
@@ -241,12 +232,14 @@ const ManageActor = () => {
         setBirthDate={handleFormChange("birthDate")}
         birthPlace={formData.birthPlace}
         setBirthPlace={handleFormChange("birthPlace")}
+        description={formData.description} // Truyền description vào ActorModal
+        setDescription={handleFormChange("description")} // Hàm cập nhật description
         profileImage={formData.profileImage}
         setProfileImage={handleFormChange("profileImage")}
         knownForMovies={formData.knownForMovies}
-        photos={formData.photos} // Truyền photos vào ActorModal
-        handleAddPhoto={handleAddPhoto} // Hàm thêm ảnh
-        handleRemovePhoto={handleRemovePhoto} // Hàm xóa ảnh
+        photos={formData.photos}
+        handleAddPhoto={handleAddPhoto}
+        handleRemovePhoto={handleRemovePhoto}
         getMovieTitlesByIds={getMovieTitlesByIds}
         movies={movies}
         setShowMovieModal={setShowMovieModal}

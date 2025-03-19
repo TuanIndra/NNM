@@ -10,6 +10,8 @@ const ActorModal = ({
   setBirthDate,
   birthPlace,
   setBirthPlace,
+  description, // Thêm prop description
+  setDescription, // Thêm prop setDescription
   profileImage,
   setProfileImage,
   knownForMovies,
@@ -62,6 +64,14 @@ const ActorModal = ({
           value={birthPlace}
           onChange={(e) => setBirthPlace(e.target.value)}
           className="border p-2 w-full rounded mb-2"
+        />
+        <textarea
+          name="description"
+          placeholder="Mô tả"
+          value={description || ""} // Đảm bảo giá trị không bị undefined
+          onChange={(e) => setDescription(e.target.value)}
+          className="border p-2 w-full rounded mb-2"
+          rows="4"
         />
         <input
           type="text"
