@@ -29,7 +29,7 @@ const TrailerPage = () => {
                     throw new Error('Không thể tải dữ liệu phim');
                 }
                 const data = await response.json();
-                console.log('Fetched movie:', data); // Debug dữ liệu
+                //console.log('Fetched movie:', data); // Debug dữ liệu
                 setMovie(data);
                 if (user && token) {
                     const existingRating = data.ratings.find(r => r.userId === user._id); // Dùng _id nếu có
