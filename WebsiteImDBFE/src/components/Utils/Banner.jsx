@@ -90,18 +90,21 @@ const Banner = () => {
                 src={currentMovie.bannerImage}
                 className="w-full h-[500px] object-cover rounded-lg shadow-md transition-opacity duration-500"
                 alt="Movie Banner"
+                loading="lazy"
                 onError={handleImageError}
             />
             <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-black via-black/100 to-transparent"></div>
 
             <button
                 onClick={handlePrev}
+                aria-label="Previous slide"
                 className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75"
             >
                 <FaArrowLeft size={24} />
             </button>
             <button
                 onClick={handleNext}
+                aria-label="Next slide"
                 className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75"
             >
                 <FaArrowRight size={24} />

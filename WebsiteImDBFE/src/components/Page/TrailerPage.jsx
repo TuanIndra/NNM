@@ -156,7 +156,10 @@ const TrailerPage = () => {
                     </div>
                 </div>
             </div>
+            <div className='ml-26'>
             <FeaturedVideos />
+            </div>
+            
         </div>
     );
 };

@@ -40,7 +40,7 @@ const FeaturedVideos = ({ movies = [] }) => {
                             className="w-80 bg-black rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:bg-[#121212] hover:cursor-pointer"
                         >
                             <div className="relative">
-                                <img src={video.image} alt={video.title} className="w-full h-44 object-cover" />
+                                <img src={video.image} alt={video.title} loading="lazy" className="w-full h-44 object-cover" />
                                 <div className="absolute bottom-2 left-2 bg-black/80 text-white text-xs px-2 py-1 rounded flex items-center">
                                     <FaPlay className="mr-1 text-yellow-400" /> {video.duration}
                                 </div>

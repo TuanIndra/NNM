@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 const SearchBar = () => {
   const [user, setUser] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [query, setQuery] = useState(""); // State lưu từ khóa tìm kiếm
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -18,40 +19,56 @@ const SearchBar = () => {
     }
   }, []);
 
+  const handleSearch = (e) => {
+    if (e.key === "Enter" && query.trim() !== "") {
+      navigate(`/search?query=${query}`);
+    }
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("token");
     setUser(null);
     if (location.pathname === "/watchlist") {
-      navigate("/"); // Chuyển về trang chủ nếu đang ở /watchlist
+      navigate("/");
     } else {
-      window.location.reload(); // Reload cho các trang khác
+      window.location.reload();
     }
   };
 
   const handleWatchlistClick = () => {
     if (!user) {
-      navigate("/require-login", { state: { from: "/watchlist" } }); // Truyền state
+      navigate("/require-login", { state: { from: "/watchlist" } });
     } else {
       navigate("/watchlist");
     }
   };
 
-  // Xử lý nút "Đăng nhập"
   const handleLoginClick = () => {
     if (location.pathname === "/home") {
-      navigate("/login"); // Chuyển thẳng đến /login nếu đang ở trang chủ
+      navigate("/login");
     } else {
-      navigate("/require-login"); // Chuyển đến /require-login nếu ở trang khác
+      navigate("/require-login");
     }
   };
 
   return (
     <div className="ml-10 flex items-center">
-      <input type="text" placeholder="Tìm kiếm" className="bg-gray-700 text-white px-4 py-2 rounded-md" />
+      {/* Ô nhập tìm kiếm */}
+      <input
+        type="text"
+        placeholder="Tìm kiếm..."
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        onKeyDown={handleSearch} // Bắt sự kiện Enter
+        className="bg-gray-700 text-white px-4 py-2 rounded-md"
+      />
 
       {/* Điều hướng đến Watchlist */}
-      <button onClick={handleWatchlistClick} className="ml-3 text-sm font-medium hover:bg-gray-700 px-3 py-2 rounded-md">
+      <button
+        onClick={handleWatchlistClick}
+        className="ml-3 text-sm font-medium hover:bg-gray-700 px-3 py-2 rounded-md"
+      >
         Danh sách xem
       </button>
 
@@ -76,7 +93,6 @@ const SearchBar = () => {
               </button>
             </div>
           )}
-
         </div>
       ) : (
         <button onClick={handleLoginClick} className="ml-3 text-sm font-medium hover:bg-gray-700 px-3 py-2 rounded-md">

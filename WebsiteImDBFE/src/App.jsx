@@ -19,6 +19,8 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TrailerPage from './components/Page/TrailerPage';
 import ActorDetail from './components/Page/Actor/ActorDetail';
+import DetailNews from './components/Page/News/detailNews';
+import SearchResultsPage from './components/Page/SearchResultsPage';
 
 const PrivateRoute = ({ children }) => {
   const user = JSON.parse(localStorage.getItem("user")); 
@@ -52,8 +54,9 @@ const App = () => {
         <Route path="/require-login" element={<RequireLogin />} />
         <Route path="/create-watchlist" element={<CreateWatchlistPage />} />
         <Route path="/watchlist/:id" element={<WatchlistMoviesPage />} />
+        <Route path="/search" element={<SearchResultsPage />} />
         <Route path="/movie/:id" element={<TrailerPage />} />
-
+        <Route path="/detailNews" element={<DetailNews></DetailNews>}></Route>
         <Route
           path="admin/*"
           element={
@@ -62,6 +65,7 @@ const App = () => {
             </PrivateRoute>
           }
         >
+         
           <Route path="movies" element={<ManageMovies />} />
           <Route path="users" element={<ManageUsers />} />
           <Route path="genres" element={<ManageGenres />} />

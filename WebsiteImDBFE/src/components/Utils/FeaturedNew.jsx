@@ -45,7 +45,7 @@ const FeaturedNew = () => {
                         {/* Nội dung */}
                         <div className="p-3">
                             <h3 className="text-sm font-bold">{item.title}</h3>
-                            <a href="#" className="text-blue-400 text-sm hover:underline">
+                            <a href="/detailNews" className="text-blue-400 text-sm hover:underline">
                                 {item.link}
                             </a>
                         </div>
@@ -54,7 +54,8 @@ const FeaturedNew = () => {
 
                 {/* Nút mũi tên */}
                 <div className="flex items-center justify-center">
-                    <button className="bg-black/60 p-3 rounded-full border border-gray-500 hover:bg-gray-700">
+                    <button className="bg-black/60 p-3 rounded-full border border-gray-500 hover:bg-gray-700"
+                    aria-label='Next news'>
                         <FaChevronRight className="text-white" />
                     </button>
                 </div>
