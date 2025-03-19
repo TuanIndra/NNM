@@ -9,13 +9,17 @@ const ActorMovies = ({ movies }) => {
             <div className="space-y-3">
                 {movies && movies.length > 0 ? (
                     movies.map((movie, index) => (
-                        <KnownForCard key={movie._id || index} movie={{
-                            title: movie.title,
-                            year: movie.releaseYear,
-                            rating: movie.rating || "N/A", // Assuming rating might come from backend later
-                            role: movie.role || "Unknown", // Role might need to be added to schema
-                            image: movie.image || "https://via.placeholder.com/50x75"
-                        }} />
+                        <KnownForCard
+                            key={movie._id || index}
+                            movie={{
+                                title: movie.title,
+                                year: movie.releaseYear,
+                                rating: movie.ratings?.length > 0
+                                    ? (movie.ratings.reduce((sum, r) => sum + r.rating, 0) / movie.ratings.length).toFixed(1)
+                                    : "N/A",
+                                poster: movie.poster,
+                            }}
+                        />
                     ))
                 ) : (
                     <p>No movies available</p>
