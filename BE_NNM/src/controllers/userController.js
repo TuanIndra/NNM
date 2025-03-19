@@ -44,11 +44,22 @@ const login = async (req, res) => {
       expiresIn: "1h",
     });
 
-    res.status(200).json({ token, user: { name: user.name, email: user.email, role: user.role } });
+    // ✅ Trả về userId
+    res.status(200).json({ 
+      token, 
+      user: { 
+        _id: user._id,  // ✅ Thêm user._id vào response
+        name: user.name, 
+        email: user.email, 
+        role: user.role 
+      } 
+    });
   } catch (err) {
+    console.error("❌ Lỗi khi login:", err);
     res.status(500).json({ message: "Lỗi server." });
   }
 };
+
 const getUsers = async (req, res) => {
   try {
       const users = await User.find({ role: { $ne: "admin" } }); // 🔥 Ẩn tài khoản admin
