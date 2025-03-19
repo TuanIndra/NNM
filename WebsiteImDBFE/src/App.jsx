@@ -31,7 +31,15 @@ const PrivateRoute = ({ children }) => {
 
   return children;
 };
+const PublicRoute = ({ children }) => {
+  const user = JSON.parse(localStorage.getItem("user"));
 
+  if (user) {
+    return <Navigate to="/home" replace />;
+  }
+
+  return children;
+};
 const App = () => {
   return (
     <Router>
@@ -45,11 +53,25 @@ const App = () => {
         draggable 
       />
       <Routes>
-      <Route path="/actor" element={<ActorDetail />} />
+        <Route path="/actor/:id" element={<ActorDetail />} />
         <Route path='/' element={<Navigate to='/home' />} />
         <Route path="/home" element={<HomePage />} />
-        <Route path="/register" element={<SignupForm />} />
-        <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/register"
+          element={
+            <PublicRoute>
+              <SignupForm />
+            </PublicRoute>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <LoginPage />
+            </PublicRoute>
+          }
+        />
         <Route path="/watchlist" element={<WatchlistPage />} />
         <Route path="/require-login" element={<RequireLogin />} />
         <Route path="/create-watchlist" element={<CreateWatchlistPage />} />

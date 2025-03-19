@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import SampleVideo from "../../assets/sample.mp4";
-import UpNext from "./UpNext";
+import UpNext from "./upNext";
 import Slider from "./../Utils/Slider";
 import Banner from "../Utils/Banner";
 import MovieSlider from "../Utils/MovieSlider";
@@ -30,6 +30,7 @@ const MainPage = () => {
                     _id: movie._id,
                     title: movie.title,
                     image: movie.poster,
+                    bannerImage: movie.bannerImage,
                     rating:
                         movie.ratings.length > 0
                             ? (
@@ -61,15 +62,15 @@ const MainPage = () => {
                 </div>
 
                 <div className="mt-20">
-                    <FeatureNew />
+                    <FeatureNew movies={movies}/>
                 </div>
 
                 <div className="mt-20">
-                    <FeaturedVideos />
+                    <FeaturedVideos movies={movies} />
                 </div>
 
                 <div className="mt-20">
-                    <FeaturedVideos />
+                    <FeaturedVideos movies={movies} />
                 </div>
 
                 <div className="mt-20">

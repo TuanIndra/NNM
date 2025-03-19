@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import MovieList from "./ManageMovies/MovieList";
-import MovieModal from "./ManageMovies/MovieModal";
-import ActorModal from "./ManageMovies/ActorModal";
-import GenreModal from "./ManageMovies/GenreModal";
+import MovieList from "./Shared/MovieList";
+import MovieModal from "./Shared/MovieModal";
+import ActorMovieModal from "./Shared/ActorMovieModal";
+import GenreModal from "./Shared/GenreModal";
 
 const API_URL = "http://localhost:5000/api/movies";
 const ACTORS_API_URL = "http://localhost:5000/api/actors";
@@ -304,7 +304,7 @@ const ManageMovies = () => {
         getActorNamesByIds={getActorNamesByIds}
         getGenreNamesByIds={getGenreNamesByIds}
       />
-      <ActorModal
+      <ActorMovieModal
         showActorModal={showActorModal}
         setShowActorModal={setShowActorModal}
         actors={actors}
