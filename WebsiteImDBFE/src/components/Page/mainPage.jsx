@@ -30,6 +30,7 @@ const MainPage = () => {
                     _id: movie._id,
                     title: movie.title,
                     image: movie.poster,
+                    bannerImage: movie.bannerImage,
                     rating:
                         movie.ratings.length > 0
                             ? (
@@ -65,7 +66,8 @@ const MainPage = () => {
                 </div>
 
                 <div className="mt-20">
-                    <FeaturedVideos />
+                    console.log("Movies state ngay trước khi render FeaturedVideos:", movies)
+                    <FeaturedVideos movies={movies} />
                 </div>
 
                 <div className="mt-20">
