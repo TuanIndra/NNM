@@ -21,85 +21,88 @@ import TrailerPage from './components/Page/TrailerPage';
 import ActorDetail from './components/Page/Actor/ActorDetail';
 import DetailNews from './components/Page/News/detailNews';
 import SearchResultsPage from './components/Page/SearchResultsPage';
+import { AuthProvider } from "./context/AuthContext";
 
 const PrivateRoute = ({ children }) => {
-  const user = JSON.parse(localStorage.getItem("user")); 
+    const user = JSON.parse(localStorage.getItem("user"));
 
-  if (!user || user.role !== "admin") {
-    return <Navigate to="/not-found" replace />;;
-  }
+    if (!user || user.role !== "admin") {
+        return <Navigate to="/not-found" replace />;
+    }
 
-  return children;
+    return children;
 };
+
 const PublicRoute = ({ children }) => {
-  const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(localStorage.getItem("user"));
 
-  if (user) {
-    return <Navigate to="/home" replace />;
-  }
+    if (user) {
+        return <Navigate to="/home" replace />;
+    }
 
-  return children;
+    return children;
 };
-const App = () => {
-  return (
-    <Router>
-      <ToastContainer 
-        position="top-center" 
-        autoClose={1000} 
-        hideProgressBar={false} 
-        newestOnTop={false} 
-        closeOnClick 
-        pauseOnHover 
-        draggable 
-      />
-      <Routes>
-        <Route path="/actor/:id" element={<ActorDetail />} />
-        <Route path='/' element={<Navigate to='/home' />} />
-        <Route path="/home" element={<HomePage />} />
-        <Route
-          path="/register"
-          element={
-            <PublicRoute>
-              <SignupForm />
-            </PublicRoute>
-          }
-        />
-        <Route
-          path="/login"
-          element={
-            <PublicRoute>
-              <LoginPage />
-            </PublicRoute>
-          }
-        />
-        <Route path="/watchlist" element={<WatchlistPage />} />
-        <Route path="/require-login" element={<RequireLogin />} />
-        <Route path="/create-watchlist" element={<CreateWatchlistPage />} />
-        <Route path="/watchlist/:id" element={<WatchlistMoviesPage />} />
-        <Route path="/search" element={<SearchResultsPage />} />
-        <Route path="/movie/:id" element={<TrailerPage />} />
-        <Route path="/detailNews" element={<DetailNews></DetailNews>}></Route>
-        <Route
-          path="admin/*"
-          element={
-            <PrivateRoute>
-              <AdminDashboard />
-            </PrivateRoute>
-          }
-        >
-         
-          <Route path="movies" element={<ManageMovies />} />
-          <Route path="users" element={<ManageUsers />} />
-          <Route path="genres" element={<ManageGenres />} />
-          <Route path="reviews" element={<ManageReviews />} />
-          <Route path="actors" element={<ManageActor/>} />
-          <Route path="stats" element={<AdminStats />} />
-        </Route>
 
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Router>
-  );
+const App = () => {
+    return (
+        <Router>
+            <AuthProvider> {/* Di chuyển AuthProvider vào bên trong Router */}
+                <ToastContainer
+                    position="top-center"
+                    autoClose={1000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    pauseOnHover
+                    draggable
+                />
+                <Routes>
+                    <Route path="/actor/:id" element={<ActorDetail />} />
+                    <Route path='/' element={<Navigate to='/home' />} />
+                    <Route path="/home" element={<HomePage />} />
+                    <Route
+                        path="/register"
+                        element={
+                            <PublicRoute>
+                                <SignupForm />
+                            </PublicRoute>
+                        }
+                    />
+                    <Route
+                        path="/login"
+                        element={
+                            <PublicRoute>
+                                <LoginPage />
+                            </PublicRoute>
+                        }
+                    />
+                    <Route path="/watchlist" element={<WatchlistPage />} />
+                    <Route path="/require-login" element={<RequireLogin />} />
+                    <Route path="/create-watchlist" element={<CreateWatchlistPage />} />
+                    <Route path="/watchlist/:id" element={<WatchlistMoviesPage />} />
+                    <Route path="/search" element={<SearchResultsPage />} />
+                    <Route path="/movie/:id" element={<TrailerPage />} />
+                    <Route path="/detailNews" element={<DetailNews />} />
+                    <Route
+                        path="admin/*"
+                        element={
+                            <PrivateRoute>
+                                <AdminDashboard />
+                            </PrivateRoute>
+                        }
+                    >
+                        <Route path="movies" element={<ManageMovies />} />
+                        <Route path="users" element={<ManageUsers />} />
+                        <Route path="genres" element={<ManageGenres />} />
+                        <Route path="reviews" element={<ManageReviews />} />
+                        <Route path="actors" element={<ManageActor />} />
+                        <Route path="stats" element={<AdminStats />} />
+                    </Route>
+                    <Route path="*" element={<NotFound />} />
+                </Routes>
+            </AuthProvider>
+        </Router>
+    );
 };
 
 export default App;

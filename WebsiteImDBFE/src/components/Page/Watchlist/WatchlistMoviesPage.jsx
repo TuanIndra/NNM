@@ -1,17 +1,26 @@
-import React, { useState, useEffect } from "react";
+// src/pages/WatchlistMoviesPage.jsx
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../../Navbar/Navbar";
+import { toast } from "react-toastify";
+import { AuthContext } from "./../../../context/AuthContext";
 
 const WatchlistMoviesPage = () => {
-    const { id } = useParams(); // Lấy ID watchlist từ URL
+    const { id } = useParams();
     const navigate = useNavigate();
+    const { token } = useContext(AuthContext); // Lấy token từ context
     const [movies, setMovies] = useState([]);
     const [watchlistName, setWatchlistName] = useState("");
-    const token = localStorage.getItem("token");
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        if (!token) {
+            navigate("/login");
+            return;
+        }
+
         fetchMovies();
-    }, [id]);
+    }, [id, token]);
 
     const fetchMovies = async () => {
         try {
@@ -24,17 +33,23 @@ const WatchlistMoviesPage = () => {
                 setMovies(data.movies);
                 setWatchlistName(data.name);
             } else {
-                alert(data.message);
+                if (data.message === "Token has expired" || data.message === "Invalid Token" || data.message === "Access Denied") {
+                    // Không cần xử lý ở đây, AuthProvider sẽ tự động đăng xuất
+                } else {
+                    toast.error(data.message, { position: "top-center" });
+                }
             }
         } catch (error) {
-            alert("Lỗi kết nối server!");
+            toast.error("Lỗi kết nối server!", { position: "top-center" });
+        } finally {
+            setLoading(false);
         }
     };
 
     const removeMovieFromWatchlist = async (movieId) => {
         const confirmDelete = window.confirm("Bạn có chắc chắn muốn xóa phim này khỏi Watchlist?");
         if (!confirmDelete) return;
-    
+
         try {
             const response = await fetch(`http://localhost:5000/api/watchlist/${id}/movies/${movieId}`, {
                 method: "DELETE",
@@ -43,23 +58,27 @@ const WatchlistMoviesPage = () => {
                     "Content-Type": "application/json"
                 }
             });
-    
+
+            const data = await response.json();
             if (response.ok) {
                 setMovies(movies.filter(movie => movie._id !== movieId));
             } else {
-                const data = await response.json();
-                alert(data.message);
+                if (data.message === "Token has expired" || data.message === "Invalid Token") {
+                    // Không cần xử lý, AuthProvider sẽ tự động đăng xuất
+                } else {
+                    toast.error(data.message, { position: "top-center" });
+                }
             }
         } catch (error) {
-            alert("Lỗi kết nối server!");
+            toast.error("Lỗi kết nối server!", { position: "top-center" });
         }
     };
-    
 
+    if (loading) return <p className="text-white">Đang tải...</p>;
 
     return (
         <div>
-            <Navbar></Navbar>
+            <Navbar />
             <div className="min-h-screen bg-gray-900 text-white">
                 <div className="max-w-6xl mx-auto p-6">
                     <h1 className="text-3xl font-bold">{watchlistName}</h1>
@@ -79,15 +98,10 @@ const WatchlistMoviesPage = () => {
                         <ul className="mt-6 space-y-6">
                             {movies.map((movie) => (
                                 <li key={movie._id} className="bg-gray-800 p-4 rounded-lg flex items-center">
-                                    {/* Ảnh Poster */}
                                     <img src={movie.poster} alt={movie.title} className="w-24 h-36 object-cover rounded-lg" />
-
-                                    {/* Thông tin phim */}
                                     <div className="ml-4 flex-grow">
                                         <h2 className="text-xl font-semibold">{movie.title}</h2>
                                         <p className="text-gray-400">{movie.releaseYear} • {movie.genre}</p>
-
-                                        {/* Rating nếu có */}
                                         {movie.ratings && movie.ratings.length > 0 && (
                                             <p className="text-yellow-400 mt-1">
                                                 ⭐ {(
@@ -97,8 +111,6 @@ const WatchlistMoviesPage = () => {
                                             </p>
                                         )}
                                     </div>
-
-                                    {/* Nút xóa phim */}
                                     <button
                                         className="ml-auto bg-red-500 px-3 py-1 rounded-lg hover:bg-red-600"
                                         onClick={() => removeMovieFromWatchlist(movie._id)}
@@ -109,7 +121,6 @@ const WatchlistMoviesPage = () => {
                             ))}
                         </ul>
                     )}
-
                     <button
                         className="mt-6 bg-yellow-500 text-black px-4 py-2 rounded-lg hover:bg-yellow-600"
                         onClick={() => navigate('/watchlist')}

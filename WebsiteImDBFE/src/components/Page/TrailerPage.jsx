@@ -11,6 +11,7 @@ const TrailerPage = () => {
     const navigate = useNavigate();
     
     const [movie, setMovie] = useState(null);
+    const [featuredMovies, setFeaturedMovies] = useState([]); // Thêm state cho phim nổi bật
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [userRating, setUserRating] = useState(0);
@@ -19,41 +20,45 @@ const TrailerPage = () => {
     const token = localStorage.getItem("token");
     const storedUser = localStorage.getItem("user");
     const user = storedUser ? JSON.parse(storedUser) : null;
-    
-    // ✅ Kiểm tra xem có user._id hay không
+
     console.log("🔹 Kiểm tra user từ localStorage:", user);
     console.log("🔹 User ID:", user?._id);
     console.log("🔹 Token từ localStorage:", token);
 
-
     useEffect(() => {
-        const fetchMovie = async () => {
+        const fetchData = async () => {
             try {
+                // Fetch chi tiết phim hiện tại
                 console.log("Fetching movie with ID:", id);
-                const response = await fetch(`http://localhost:5000/api/movies/${id}`, {
+                const movieResponse = await fetch(`http://localhost:5000/api/movies/${id}`, {
                     headers: token ? { Authorization: `Bearer ${token}` } : {},
                 });
-                if (!response.ok) throw new Error('Không thể tải dữ liệu phim');
+                if (!movieResponse.ok) throw new Error('Không thể tải dữ liệu phim');
+                const movieData = await movieResponse.json();
+                console.log("Fetched movie data:", movieData);
 
-                const data = await response.json();
-                console.log("Fetched movie data:", data);
-
-                setMovie(data);
+                setMovie(movieData);
                 if (user) {
-                    console.log("User ID:", storedUser._id);
-                    const existingRating = data.ratings.find(r => r.userId === user._id);
+                    const existingRating = movieData.ratings.find(r => r.userId === user._id);
                     if (existingRating) setUserRating(existingRating.rating);
                 }
+
+                // Fetch danh sách phim nổi bật
+                const featuredResponse = await fetch("http://localhost:5000/api/movies?page=1&limit=10");
+                if (!featuredResponse.ok) throw new Error('Không thể tải danh sách phim nổi bật');
+                const featuredData = await featuredResponse.json();
+                console.log("Fetched featured movies:", featuredData.movies);
+                setFeaturedMovies(featuredData.movies); // Lưu danh sách phim vào state
             } catch (err) {
-                console.error("Lỗi khi fetch phim:", err);
+                console.error("Lỗi khi fetch dữ liệu:", err);
                 setError(err.message);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchMovie();
-    }, [id]);  // 🔥 Chỉ phụ thuộc vào `id`, không phụ thuộc vào `token` và `user`
+        fetchData();
+    }, [id]); // Chỉ phụ thuộc vào `id`
 
     const handleRating = async (rating) => {
         if (!token) {
@@ -156,10 +161,9 @@ const TrailerPage = () => {
                     </div>
                 </div>
             </div>
-            <div className='ml-26'>
-            <FeaturedVideos />
+            <div className="ml-26">
+                <FeaturedVideos movies={featuredMovies} />
             </div>
-            
         </div>
     );
 };

@@ -12,4 +12,8 @@ router.delete("/:id", movieController.deleteMovie);
 router.get("/search", movieController.searchMovies); 
 router.put("/:id/rate", authMiddleware, movieController.rateMovie);
 
+router.get("/", authMiddleware, async (req, res) => {
+    const movies = await Movie.find();
+    res.json({ movies });
+});
 module.exports = router;
