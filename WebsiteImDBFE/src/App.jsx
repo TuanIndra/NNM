@@ -22,6 +22,7 @@ import ActorDetail from './components/Page/Actor/ActorDetail';
 import DetailNews from './components/Page/News/detailNews';
 import SearchResultsPage from './components/Page/SearchResultsPage';
 import { AuthProvider } from "./context/AuthContext";
+import MenuResultsPage from "./components/Page/MenuResultsPage";
 
 const PrivateRoute = ({ children }) => {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -83,6 +84,7 @@ const App = () => {
                     <Route path="/search" element={<SearchResultsPage />} />
                     <Route path="/movie/:id" element={<TrailerPage />} />
                     <Route path="/detailNews" element={<DetailNews />} />
+                    <Route path="/menu-results" element={<MenuResultsPage />} />
                     <Route
                         path="admin/*"
                         element={
@@ -104,5 +106,4 @@ const App = () => {
         </Router>
     );
 };
-
 export default App;
