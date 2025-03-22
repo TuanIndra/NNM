@@ -129,3 +129,12 @@ exports.deleteActor = async (req, res) => {
         res.status(500).json({ message: "Lỗi khi xóa diễn viên", error });
     }
 };
+exports.getActorsCount = async (req, res) => {
+    try {
+        const count = await Actor.countDocuments();
+        res.status(200).json({ count });
+    } catch (error) {
+        console.error("Error in getActorsCount:", error.stack);
+        res.status(500).json({ message: "Lỗi khi đếm số diễn viên", error });
+    }
+};

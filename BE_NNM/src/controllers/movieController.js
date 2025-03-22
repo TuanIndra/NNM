@@ -180,6 +180,14 @@ exports.searchMovies = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+exports.getMoviesCount = async (req, res) => {
+    try {
+        const count = await Movie.countDocuments();
+        res.status(200).json({ count });
+    } catch (error) {
+        res.status(500).json({ message: "Lỗi khi đếm số phim", error });
+    }
+};
 
 // Thêm hàm xử lý rating
 exports.rateMovie = async (req, res) => {

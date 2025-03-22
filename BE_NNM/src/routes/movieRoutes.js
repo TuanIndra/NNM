@@ -4,6 +4,7 @@ const movieController = require("../controllers/movieController");
 const authMiddleware = require("../middlewares/authMiddleware");
 
 router.get("/", movieController.getMovies);  
+router.get("/count", movieController.getMoviesCount); // Thêm endpoint đếm số phim
 router.get("/:id", movieController.getMovieById); 
 router.post("/", movieController.addMovie); 
 router.put("/:id", movieController.updateMovie); 

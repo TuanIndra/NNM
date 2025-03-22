@@ -44,11 +44,10 @@ const login = async (req, res) => {
       expiresIn: "1h",
     });
 
-    // ✅ Trả về userId
     res.status(200).json({ 
       token, 
       user: { 
-        _id: user._id,  // ✅ Thêm user._id vào response
+        _id: user._id,
         name: user.name, 
         email: user.email, 
         role: user.role 
@@ -62,30 +61,27 @@ const login = async (req, res) => {
 
 const getUsers = async (req, res) => {
   try {
-      const users = await User.find({ role: { $ne: "admin" } }); // 🔥 Ẩn tài khoản admin
+      const users = await User.find({ role: { $ne: "admin" } });
       res.json(users);
   } catch (error) {
       res.status(500).json({ message: "Lỗi khi lấy danh sách người dùng" });
   }
 };
 
-// 📌 Thêm người dùng mới
 const addUser = async (req, res) => {
   try {
       const { name, email, password } = req.body;
 
-      // Kiểm tra email đã tồn tại chưa
       const existingUser = await User.findOne({ email });
       if (existingUser) return res.status(400).json({ message: "Email đã tồn tại" });
 
-      // Mã hóa mật khẩu
       const hashedPassword = await bcrypt.hash(password, 10);
 
       const newUser = new User({
           name,
           email,
           password: hashedPassword,
-          role: "user", // 🛑 Chỉ cho phép tạo user (không cho tạo admin)
+          role: "user",
       });
 
       await newUser.save();
@@ -95,7 +91,6 @@ const addUser = async (req, res) => {
   }
 };
 
-// 📌 Cập nhật thông tin người dùng
 const updateUser = async (req, res) => {
   try {
       const { id } = req.params;
@@ -107,7 +102,6 @@ const updateUser = async (req, res) => {
       user.name = name || user.name;
       user.email = email || user.email;
 
-      // Nếu có mật khẩu mới, mã hóa lại
       if (password) {
           user.password = await bcrypt.hash(password, 10);
       }
@@ -119,7 +113,6 @@ const updateUser = async (req, res) => {
   }
 };
 
-// 📌 Xóa người dùng
 const deleteUser = async (req, res) => {
   try {
       const { id } = req.params;
@@ -130,4 +123,22 @@ const deleteUser = async (req, res) => {
       res.status(500).json({ message: "Lỗi khi xóa người dùng" });
   }
 };
-module.exports = { register, login, getUsers, addUser, updateUser, deleteUser};
+
+const getUsersCount = async (req, res) => {
+    try {
+        const count = await User.countDocuments({ role: { $ne: "admin" } });
+        res.status(200).json({ count });
+    } catch (error) {
+        res.status(500).json({ message: "Lỗi khi đếm số người dùng", error });
+    }
+};
+
+module.exports = { 
+    register, 
+    login, 
+    getUsers, 
+    addUser, 
+    updateUser, 
+    deleteUser, 
+    getUsersCount // Thêm getUsersCount vào exports
+};
