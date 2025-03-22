@@ -2,20 +2,20 @@ import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Link } from "react-router-dom"; // Import Link từ react-router-dom
-import Main from "../../assets/main.jpg";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify"; // Nếu dùng toast
 
 const ImageSlider = () => {
     const [actors, setActors] = useState([]);
 
     useEffect(() => {
-        fetch("http://localhost:5000/api/actors")
+        fetch("http://localhost:5000/api/actors/top")
             .then((response) => {
                 if (!response.ok) throw new Error("Lỗi khi tải danh sách diễn viên");
                 return response.json();
             })
             .then((data) => {
-                console.log("Dữ liệu diễn viên:", data); // Debug dữ liệu
+                console.log("Top diễn viên:", data);
                 setActors(data);
             })
             .catch((error) => {
@@ -34,10 +34,9 @@ const ImageSlider = () => {
         autoplaySpeed: 2000,
     };
 
-    // Hàm xử lý fallback khi ảnh không tải được
     const handleImageError = (e) => {
-        e.target.src = "https://picsum.photos/150"; // URL thay thế
-        e.target.onerror = null; // Ngăn lặp lại lỗi
+        e.target.src = "https://picsum.photos/150";
+        e.target.onerror = null;
     };
 
     return (
@@ -50,7 +49,7 @@ const ImageSlider = () => {
                                 src={actor.profileImage || "https://picsum.photos/150"}
                                 alt={actor.name}
                                 className="w-40 h-40 object-cover rounded-full border-2 border-gray-500 mx-auto"
-                                onError={handleImageError} // Xử lý lỗi tải ảnh
+                                onError={handleImageError}
                             />
                             <p className="text-center mt-2 font-semibold text-white">{actor.name}</p>
                         </div>

@@ -161,22 +161,30 @@ exports.searchMovies = async (req, res) => {
             return res.status(400).json({ message: "Vui lòng nhập từ khóa tìm kiếm." });
         }
 
+        // Tìm các thể loại khớp với query
         const genres = await Genre.find({ name: { $regex: query, $options: "i" } });
         const genreIds = genres.map((g) => g._id);
 
+        // Tìm các diễn viên khớp với query
+        const actors = await Actor.find({ name: { $regex: query, $options: "i" } });
+        const actorIds = actors.map((a) => a._id);
+
+        // Tìm phim khớp với title, director, genre, hoặc actors
         const movies = await Movie.find({
             $or: [
                 { title: { $regex: query, $options: "i" } },
                 { director: { $regex: query, $options: "i" } },
                 { genre: { $in: genreIds } },
+                { actors: { $in: actorIds } }, // Thêm điều kiện tìm theo actors
             ],
         })
             .populate("genre", "name")
-            .populate("actors", "name")
-            .select("title poster actors genre ratings");
+            .populate("actors", "name profileImage") // Thêm image nếu Actor có trường này
+            .select("title poster actors genre ratings releaseYear");
 
         res.json(movies);
     } catch (err) {
+        console.error("Error in searchMovies:", err);
         res.status(500).json({ message: err.message });
     }
 };

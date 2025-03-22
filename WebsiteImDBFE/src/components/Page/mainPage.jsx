@@ -62,16 +62,15 @@ const MainPage = () => {
                 </div>
 
                 <div className="mt-20">
-                    <FeatureNew />
+                    <FeatureNew movies={movies}/>
                 </div>
 
                 <div className="mt-20">
-                    console.log("Movies state ngay trước khi render FeaturedVideos:", movies)
                     <FeaturedVideos movies={movies} />
                 </div>
 
                 <div className="mt-20">
-                    <FeaturedVideos />
+                    <FeaturedVideos movies={movies} />
                 </div>
 
                 <div className="mt-20">

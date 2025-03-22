@@ -47,9 +47,9 @@ const UpNext = () => {
   };
 
   const handleSeeMore = () => {
-    navigate('/movies'); // Navigate to a full movies list page
+    navigate('/search?query=latest'); // Navigate to a full movies list page
   };
-
+  
   return (
     <div className="bg-[#121212] text-white p-4 rounded-lg w-120 h-[500px] flex flex-col">
       <h2 className="text-lg font-bold mb-4 text-blue-500">Up next</h2>

@@ -129,6 +129,27 @@ exports.deleteActor = async (req, res) => {
         res.status(500).json({ message: "Lỗi khi xóa diễn viên", error });
     }
 };
+
+exports.getTopActors = async (req, res) => {
+    try {
+        const topActors = await Actor.aggregate([
+            {
+                $project: {
+                    name: 1,
+                    profileImage: 1,
+                    movieCount: { $size: { $ifNull: ["$knownForMovies", []] } },
+                },
+            },
+            { $sort: { movieCount: -1 } },
+            { $limit: 6 },
+        ]);
+
+        res.status(200).json(topActors);
+    } catch (error) {
+        console.error("Error in getTopActors:", error);
+        res.status(500).json({ message: "Lỗi khi lấy top diễn viên", error });
+    }
+};
 exports.getActorsCount = async (req, res) => {
     try {
         const count = await Actor.countDocuments();
