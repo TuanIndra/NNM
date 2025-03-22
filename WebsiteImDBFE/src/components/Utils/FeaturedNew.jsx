@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { FaChevronRight } from 'react-icons/fa';
+import { Link } from 'react-router-dom'; // Import Link từ react-router-dom
 
 const FeaturedNew = () => {
     const [featuredItems, setFeaturedItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Load 9 phim mới nhất từ API và chia thành 3 nhóm
     useEffect(() => {
         const fetchLatestMovies = async () => {
             try {
@@ -18,17 +18,16 @@ const FeaturedNew = () => {
 
                 const moviesArray = Array.isArray(data.movies) ? data.movies : [];
                 const latestMovies = moviesArray
-                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) // Sắp xếp theo ngày tạo mới nhất
-                    .slice(0, 9); // Lấy 9 phim mới nhất
+                    .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                    .slice(0, 9);
 
-                // Chia 9 phim thành 3 nhóm, mỗi nhóm 3 phim
                 const groupedMovies = [];
                 for (let i = 0; i < latestMovies.length; i += 3) {
                     const group = latestMovies.slice(i, i + 3);
                     groupedMovies.push({
-                        title: `New Releases: ${group.map(m => m.title).join(", ")}`, // Tiêu đề là danh sách tên phim
-                        link: "See more", // Có thể thay bằng link thực tế nếu cần
-                        images: group.map(m => m.poster || "https://picsum.photos/150/200"), // Dùng poster cho 3 ảnh nhỏ
+                        title: `New Releases: ${group.map(m => m.title).join(", ")}`,
+                        movieIds: group.map(m => m._id), // Lưu danh sách ID phim
+                        images: group.map(m => m.poster || "https://picsum.photos/150/200"),
                         type: "list",
                     });
                 }
@@ -46,10 +45,8 @@ const FeaturedNew = () => {
 
     return (
         <div className="w-full bg-black text-white p-5">
-            {/* Tiêu đề */}
             <h2 className="text-xl font-bold text-yellow-500 mb-4">Featured New</h2>
 
-            {/* Danh sách featured */}
             {loading ? (
                 <p className="text-gray-400">Đang tải phim...</p>
             ) : error ? (
@@ -58,7 +55,6 @@ const FeaturedNew = () => {
                 <div className="flex space-x-4 overflow-x-auto">
                     {featuredItems.map((item, index) => (
                         <div key={index} className="w-80 bg-[#111] rounded-lg shadow-lg overflow-hidden">
-                            {/* Banner 3 ảnh gộp lại */}
                             <div className="grid grid-cols-3 gap-0 w-full h-40 overflow-hidden">
                                 {item.images.map((img, idx) => (
                                     <img 
@@ -70,17 +66,18 @@ const FeaturedNew = () => {
                                 ))}
                             </div>
 
-                            {/* Nội dung */}
                             <div className="p-3">
                                 <h3 className="text-sm font-bold">{item.title}</h3>
-                                <a href="#" className="text-blue-400 text-sm hover:underline">
-                                    {item.link}
-                                </a>
+                                <Link 
+                                    to={`/search?movieIds=${encodeURIComponent(item.movieIds.join(','))}`} 
+                                    className="text-blue-400 text-sm hover:underline"
+                                >
+                                    See more
+                                </Link>
                             </div>
                         </div>
                     ))}
 
-                    {/* Nút mũi tên */}
                     {featuredItems.length > 0 && (
                         <div className="flex items-center justify-center">
                             <button className="bg-black/60 p-3 rounded-full border border-gray-500 hover:bg-gray-700">

@@ -5,6 +5,7 @@ import Navbar from "../Navbar/Navbar";
 const SearchResultsPage = () => {
     const [searchParams] = useSearchParams();
     const query = searchParams.get("query");
+    const movieIds = searchParams.get("movieIds"); // Lấy movieIds từ query string
     const [actors, setActors] = useState([]);
     const [movies, setMovies] = useState([]);
     const [showAllActors, setShowAllActors] = useState(false);
@@ -14,13 +15,32 @@ const SearchResultsPage = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            if (!query) return;
+            if (!query && !movieIds) return;
 
             setLoading(true);
             setError(null);
 
             try {
-                if (query === "latest") {
+                if (movieIds) {
+                    // Nếu có movieIds, lấy phim theo danh sách ID
+                    const idsArray = movieIds.split(",");
+                    const response = await fetch("http://localhost:5000/api/movies");
+                    if (!response.ok) {
+                        throw new Error("Không thể tải danh sách phim");
+                    }
+                    const data = await response.json();
+                    const filteredMovies = data.movies
+                        .filter(movie => idsArray.includes(movie._id))
+                        .map(movie => ({
+                            id: movie._id,
+                            title: movie.title,
+                            year: movie.releaseYear || "N/A",
+                            actors: movie.actors ? movie.actors.map(actor => actor.name) : [],
+                            image: movie.poster || "https://via.placeholder.com/100",
+                        }));
+                    setMovies(filteredMovies);
+                    setActors([]); // Không hiển thị actors khi dùng movieIds
+                } else if (query === "latest") {
                     const response = await fetch("http://localhost:5000/api/movies?page=1&limit=10");
                     if (!response.ok) {
                         throw new Error("Không thể tải danh sách phim");
@@ -38,14 +58,12 @@ const SearchResultsPage = () => {
                     setMovies(latestMovies);
                     setActors([]);
                 } else {
-                    // Tìm kiếm phim và actors với query
                     const response = await fetch(`http://localhost:5000/api/search?query=${encodeURIComponent(query)}`);
                     if (!response.ok) {
                         throw new Error("Không thể tải dữ liệu");
                     }
                     const data = await response.json();
 
-                    // Xử lý phim
                     const filteredMovies = data.map(movie => ({
                         id: movie._id,
                         title: movie.title,
@@ -55,17 +73,16 @@ const SearchResultsPage = () => {
                     }));
                     setMovies(filteredMovies);
 
-                    // Trích xuất actors từ danh sách phim
                     const allActors = data
                         .flatMap(movie => movie.actors || [])
                         .map(actor => ({
                             id: actor._id,
                             name: actor.name,
                             role: "Actor",
-                            image: actor.profileImage || "https://via.placeholder.com/50",
+                            image: actor.image || "https://via.placeholder.com/50",
                         }))
                         .filter((actor, index, self) => 
-                            index === self.findIndex(a => a.id === actor.id) // Loại bỏ trùng lặp
+                            index === self.findIndex(a => a.id === actor.id)
                         );
                     setActors(allActors);
                 }
@@ -77,18 +94,18 @@ const SearchResultsPage = () => {
         };
 
         fetchData();
-    }, [query]);
+    }, [query, movieIds]);
 
     return (
         <div>
             <Navbar />
             <div className="p-6 mt-24 px-24 justify-center items-center">
                 <h1 className="text-5xl font-bold mb-4">
-                    {query === "latest" ? "Latest Movies" : `Search "${query}"`}
+                    {movieIds ? "Featured New Movies" : (query === "latest" ? "Latest Movies" : `Search "${query}"`)}
                 </h1>
 
                 {/* People Section */}
-                {query !== "latest" && (
+                {query && query !== "latest" && !movieIds && (
                     <section className="mb-6 mt-24">
                         <h2 className="text-xl font-semibold mb-2">People</h2>
                         <div className="bg-gray-100 p-4 rounded">
