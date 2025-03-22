@@ -3,9 +3,9 @@ const MoreToExplore = () => {
         title: "Staff Picks: What to Watch in March",
         link: "#",
         images: [
-            { id: 1, src: "https://via.placeholder.com/100x150", title: "The Wheel of Time" },
-            { id: 2, src: "https://via.placeholder.com/100x150", title: "The Electric State" },
-            { id: 3, src: "https://via.placeholder.com/100x150", title: "Adolescence" },
+            { id: 1, src: "https://th.bing.com/th?id=OIP.GkZYZu_UVTY-W1rv5R_74wHaOG&w=181&h=345&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2", title: "The Wheel of Time" },
+            { id: 2, src: "https://th.bing.com/th?id=OIP.GkZYZu_UVTY-W1rv5R_74wHaOG&w=181&h=345&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2", title: "The Electric State" },
+            { id: 3, src: "https://th.bing.com/th?id=OIP.GkZYZu_UVTY-W1rv5R_74wHaOG&w=181&h=345&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2", title: "Adolescence" },
         ],
     };
 
@@ -15,21 +15,21 @@ const MoreToExplore = () => {
             title: "The Billion-Dollar Film Club: 50+ Movies To Reach $1 Billion Worldwide",
             updated: "3 weeks ago",
             imagesCount: 57,
-            thumbnail: "https://via.placeholder.com/80x80",
+            thumbnail: "https://th.bing.com/th?id=OIP.GkZYZu_UVTY-W1rv5R_74wHaOG&w=181&h=345&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2",
         },
         {
             id: 2,
             title: "The top 10 worldwide box office hits of 2023",
             updated: "1 year ago",
             imagesCount: 10,
-            thumbnail: "https://via.placeholder.com/80x80",
+            thumbnail: "https://th.bing.com/th?id=OIP.GkZYZu_UVTY-W1rv5R_74wHaOG&w=181&h=345&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2",
         },
         {
             id: 3,
             title: "The top 10 worldwide box office hits of 2022",
             updated: "1 year ago",
             imagesCount: 10,
-            thumbnail: "https://via.placeholder.com/80x80",
+            thumbnail: "https://th.bing.com/th?id=OIP.GkZYZu_UVTY-W1rv5R_74wHaOG&w=181&h=345&c=8&rs=1&qlt=90&o=6&dpr=1.3&pid=3.1&rm=2",
         },
     ];
 

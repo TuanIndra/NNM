@@ -103,9 +103,6 @@ const ActorInfo = ({ actor }) => {
                         <p className="text-start text-white ml-15 justify-between mt-5">
                             Born: {actor?.birthDate ? new Date(actor.birthDate).toLocaleDateString() : "Unknown"}
                         </p>
-                        <div className="ml-24 w-[358px] h-[48px] justify-start mt-4">
-                            <Button />
-                        </div>
                     </div>
                 </div>
             </div>
