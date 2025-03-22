@@ -21,6 +21,7 @@ import TrailerPage from './components/Page/TrailerPage';
 import ActorDetail from './components/Page/Actor/ActorDetail';
 import DetailNews from './components/Page/News/detailNews';
 import SearchResultsPage from './components/Page/SearchResultsPage';
+import MenuResultsPage from "./components/Page/MenuResultsPage";
 
 const PrivateRoute = ({ children }) => {
   const user = JSON.parse(localStorage.getItem("user")); 
@@ -78,7 +79,8 @@ const App = () => {
         <Route path="/watchlist/:id" element={<WatchlistMoviesPage />} />
         <Route path="/search" element={<SearchResultsPage />} />
         <Route path="/movie/:id" element={<TrailerPage />} />
-        <Route path="/detailNews" element={<DetailNews></DetailNews>}></Route>
+        <Route path="/menu-results" element={<MenuResultsPage />} />
+        <Route path="/detailNews" element={<DetailNews></DetailNews>}></Route>   
         <Route
           path="admin/*"
           element={
