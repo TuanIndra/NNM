@@ -8,7 +8,7 @@ const Navbar = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false); // State menu
-
+  
   useEffect(() => {
     if (isMenuOpen) {
       document.body.style.overflow = "hidden"; // Chặn scroll

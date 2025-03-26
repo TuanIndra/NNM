@@ -70,14 +70,6 @@ const FeaturedNew = () => {
                                 ))}
                             </div>
 
-<<<<<<< HEAD
-                        {/* Nội dung */}
-                        <div className="p-3">
-                            <h3 className="text-sm font-bold">{item.title}</h3>
-                            <a href="/detailNews" className="text-blue-400 text-sm hover:underline">
-                                {item.link}
-                            </a>
-=======
                             {/* Nội dung */}
                             <div className="p-3">
                                 <h3 className="text-sm font-bold">{item.title}</h3>
@@ -85,18 +77,9 @@ const FeaturedNew = () => {
                                     {item.link}
                                 </a>
                             </div>
->>>>>>> 0be751134d045a6a1a51f25894512e5c799baa27
                         </div>
                     ))}
 
-<<<<<<< HEAD
-                {/* Nút mũi tên */}
-                <div className="flex items-center justify-center">
-                    <button className="bg-black/60 p-3 rounded-full border border-gray-500 hover:bg-gray-700"
-                    aria-label='Next news'>
-                        <FaChevronRight className="text-white" />
-                    </button>
-=======
                     {/* Nút mũi tên */}
                     {featuredItems.length > 0 && (
                         <div className="flex items-center justify-center">
@@ -105,7 +88,6 @@ const FeaturedNew = () => {
                             </button>
                         </div>
                     )}
->>>>>>> 0be751134d045a6a1a51f25894512e5c799baa27
                 </div>
             )}
         </div>
