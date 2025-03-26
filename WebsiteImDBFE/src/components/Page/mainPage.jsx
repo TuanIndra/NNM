@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import SampleVideo from "../../assets/sample.mp4";
+import Banner from "../Utils/Banner";
 import UpNext from "./upNext";
 import Slider from "./../Utils/Slider";
-import Banner from "../Utils/Banner";
 import MovieSlider from "../Utils/MovieSlider";
 import FeatureNew from "../Utils/FeaturedNew";
 import FeaturedVideos from "../Utils/FeaturedVideo";
@@ -24,7 +23,6 @@ const MainPage = () => {
                 const data = await response.json();
                 console.log("Dữ liệu phim từ API (MainPage):", data);
 
-                // Kiểm tra xem data.movies có tồn tại và là mảng không
                 const moviesArray = Array.isArray(data.movies) ? data.movies : [];
                 const formattedMovies = moviesArray.map((movie) => ({
                     _id: movie._id,
@@ -32,12 +30,14 @@ const MainPage = () => {
                     image: movie.poster,
                     bannerImage: movie.bannerImage,
                     rating:
-                        movie.ratings.length > 0
+                        movie.ratings && movie.ratings.length > 0
                             ? (
                                   movie.ratings.reduce((sum, r) => sum + r.rating, 0) /
                                   movie.ratings.length
                               ).toFixed(1)
                             : 0,
+                    releaseYear: movie.releaseYear || "N/A", // Đảm bảo có releaseYear
+                    ratingsCount: movie.ratings ? movie.ratings.length : 0,
                 }));
                 setMovies(formattedMovies);
             } catch (err) {
@@ -49,6 +49,23 @@ const MainPage = () => {
 
         fetchMovies();
     }, []);
+
+    // Lọc phim nổi bật (dựa trên số lượng đánh giá)
+    const featuredMovies = movies
+        .sort((a, b) => b.ratingsCount - a.ratingsCount)
+        .slice(0, 10);
+
+    // Lọc phim mới (dựa trên releaseYear)
+    const newMovies = movies
+        .filter((movie) => movie.releaseYear !== "N/A") // Loại bỏ phim không có năm phát hành
+        .sort((a, b) => Number(b.releaseYear) - Number(a.releaseYear)) // Sắp xếp theo năm giảm dần
+        .slice(0, 10);
+
+    // Lọc phim được yêu thích (dựa trên điểm đánh giá trung bình)
+    const popularMovies = movies
+        .filter((movie) => movie.rating > 0)
+        .sort((a, b) => b.rating - a.rating)
+        .slice(0, 10);
 
     return (
         <div>
@@ -62,7 +79,7 @@ const MainPage = () => {
                 </div>
 
                 <div className="mt-20">
-                    <FeatureNew movies={movies}/>
+                    <FeatureNew movies={movies} />
                 </div>
 
                 <div className="mt-20">
@@ -86,15 +103,15 @@ const MainPage = () => {
                     <>
                         <div className="text-white mt-20">
                             <a className="text-xl font-bold text-white">Phim nổi bật</a>
-                            <MovieSlider movies={movies} />
+                            <MovieSlider movies={featuredMovies} />
                         </div>
                         <div className="text-white mt-20">
                             <a className="text-xl font-bold text-white">Phim mới</a>
-                            <MovieSlider movies={movies} />
+                            <MovieSlider movies={newMovies} />
                         </div>
                         <div className="text-white mt-20">
                             <a className="text-xl font-bold text-white">Phim được yêu thích</a>
-                            <MovieSlider movies={movies} />
+                            <MovieSlider movies={popularMovies} />
                         </div>
                     </>
                 )}

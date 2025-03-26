@@ -18,38 +18,38 @@ const MenuResultsPage = () => {
             setError(null);
 
             try {
-                console.log("Type:", type, "Query:", query);
+                console.log("Loại:", type, "Truy vấn:", query);
                 const response = await fetch("http://localhost:5000/api/movies?limit=250");
                 if (!response.ok) throw new Error("Không thể tải danh sách phim");
                 const data = await response.json();
                 const moviesArray = Array.isArray(data.movies) ? data.movies : [];
-                console.log("Movies fetched:", moviesArray);
+                console.log("Danh sách phim:", moviesArray);
 
                 let filteredItems = [];
                 switch (type.toLowerCase()) {
-                    case "movies":
+                    case "phim":
                         filteredItems = handleMovies(moviesArray, query);
                         break;
 
-                    case "tvshows":
+                    case "chươngtrìnhtv":
                         const tvShows = moviesArray.filter(movie => !movie.theatricalReleaseDate);
-                        console.log("Filtered TV Shows:", tvShows);
+                        console.log("Chương trình TV:", tvShows);
                         filteredItems = handleTVShows(tvShows, query);
                         break;
 
-                    case "watch":
+                    case "xem":
                         filteredItems = handleWatch(moviesArray, query);
                         break;
 
-                    case "awards":
+                    case "giảithưởng&sựkiện":
                         filteredItems = handleAwards(moviesArray, query);
                         break;
 
-                    case "celebs":
+                    case "ngườinổitiếng":
                         filteredItems = handleCelebs(moviesArray, query);
                         break;
 
-                    case "community":
+                    case "cộngđồng":
                         filteredItems = handleCommunity(moviesArray, query);
                         break;
 
@@ -70,12 +70,12 @@ const MenuResultsPage = () => {
 
     const handleMovies = (moviesArray, query) => {
         switch (query) {
-            case "Release Calendar":
+            case "Lịch phát hành":
                 return moviesArray
                     .filter(movie => movie.theatricalReleaseDate || movie.createdAt)
                     .sort((a, b) => new Date(b.theatricalReleaseDate || b.createdAt) - new Date(a.theatricalReleaseDate || a.createdAt))
                     .map(movie => formatMovie(movie));
-            case "Top 250 Movies":
+            case "Top 250 phim":
                 return moviesArray
                     .filter(movie => movie.ratings && movie.ratings.length > 0)
                     .sort((a, b) => {
@@ -85,14 +85,14 @@ const MenuResultsPage = () => {
                     })
                     .slice(0, 250)
                     .map(movie => formatMovie(movie));
-            case "Most Popular Movies":
+            case "Phim phổ biến nhất":
                 return moviesArray
                     .sort((a, b) => (b.ratings?.length || 0) - (a.ratings?.length || 0))
                     .slice(0, 50)
                     .map(movie => formatMovie(movie));
-            case "Browse Movies by Genre":
+            case "Duyệt phim theo thể loại":
                 return moviesArray.map(movie => formatMovie(movie));
-            case "Top Box Office":
+            case "Doanh thu phòng vé cao nhất":
                 return moviesArray
                     .filter(movie => movie.ratings && movie.ratings.length > 0)
                     .sort((a, b) => {
@@ -102,9 +102,9 @@ const MenuResultsPage = () => {
                     })
                     .slice(0, 10)
                     .map(movie => formatMovie(movie));
-            case "Showtimes & Tickets":
-            case "Movie News":
-            case "India Movie Spotlight":
+            case "Lịch chiếu & Vé":
+            case "Tin tức phim":
+            case "Tiêu điểm phim Ấn Độ":
                 return moviesArray.slice(0, 10).map(movie => formatMovie(movie));
             default:
                 return moviesArray
@@ -115,12 +115,12 @@ const MenuResultsPage = () => {
 
     const handleTVShows = (tvShows, query) => {
         switch (query) {
-            case "What's on TV & Streaming":
+            case "Có gì trên TV & Streaming":
                 return tvShows
                     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                     .slice(0, 50)
                     .map(movie => formatMovie(movie));
-            case "Top 250 TV Shows":
+            case "Top 250 chương trình TV":
                 return tvShows
                     .filter(show => show.ratings && show.ratings.length > 0)
                     .sort((a, b) => {
@@ -130,14 +130,14 @@ const MenuResultsPage = () => {
                     })
                     .slice(0, 250)
                     .map(movie => formatMovie(movie));
-            case "Most Popular TV Shows":
+            case "Chương trình TV phổ biến nhất":
                 return tvShows
                     .sort((a, b) => (b.ratings?.length || 0) - (a.ratings?.length || 0))
                     .slice(0, 50)
                     .map(movie => formatMovie(movie));
-            case "Browse TV Shows by Genre":
+            case "Duyệt chương trình TV theo thể loại":
                 return tvShows.map(movie => formatMovie(movie));
-            case "TV News":
+            case "Tin tức TV":
                 return tvShows.slice(0, 10).map(movie => formatMovie(movie));
             default:
                 return tvShows
@@ -148,7 +148,7 @@ const MenuResultsPage = () => {
 
     const handleWatch = (moviesArray, query) => {
         switch (query) {
-            case "What to Watch":
+            case "Xem gì":
                 return moviesArray
                     .filter(movie => movie.ratings && movie.ratings.length > 0)
                     .sort((a, b) => {
@@ -158,28 +158,28 @@ const MenuResultsPage = () => {
                     })
                     .slice(0, 10)
                     .map(movie => formatMovie(movie));
-            case "Latest Trailers":
+            case "Trailer mới nhất":
                 return moviesArray
                     .filter(movie => movie.trailer)
                     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                     .slice(0, 10)
                     .map(movie => formatMovie(movie, true));
-            case "IMDb Originals":
+            case "Tác phẩm gốc IMDb":
                 return moviesArray
                     .sort(() => 0.5 - Math.random())
                     .slice(0, 5)
                     .map(movie => formatMovie(movie));
-            case "IMDb Picks":
+            case "Lựa chọn IMDb":
                 return moviesArray
                     .sort((a, b) => (b.ratings?.length || 0) - (a.ratings?.length || 0))
                     .slice(0, 10)
                     .map(movie => formatMovie(movie));
-            case "IMDb Spotlight":
+            case "Tiêu điểm IMDb":
                 return moviesArray
                     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                     .slice(0, 5)
                     .map(movie => formatMovie(movie));
-            case "IMDb Podcasts":
+            case "Podcast IMDb":
                 return moviesArray
                     .slice(0, 5)
                     .map(movie => formatMovie(movie));
@@ -202,13 +202,13 @@ const MenuResultsPage = () => {
                     })
                     .slice(0, 10)
                     .map(movie => formatMovie(movie));
-            case "SXSW Film Festival":
+            case "Liên hoan phim SXSW":
                 return moviesArray
                     .filter(movie => movie.theatricalReleaseDate || movie.createdAt)
                     .sort((a, b) => new Date(b.theatricalReleaseDate || b.createdAt) - new Date(a.theatricalReleaseDate || a.createdAt))
                     .slice(0, 10)
                     .map(movie => formatMovie(movie));
-            case "Women's History Month":
+            case "Tháng lịch sử phụ nữ":
                 return moviesArray
                     .filter(movie => movie.ratings && movie.ratings.length > 0)
                     .sort((a, b) => {
@@ -218,12 +218,12 @@ const MenuResultsPage = () => {
                     })
                     .slice(0, 10)
                     .map(movie => formatMovie(movie));
-            case "STARmeter Awards":
+            case "Giải thưởng STARmeter":
                 return moviesArray
                     .sort((a, b) => (b.ratings?.length || 0) - (a.ratings?.length || 0))
                     .slice(0, 10)
                     .map(movie => formatMovie(movie));
-            case "Awards Central":
+            case "Trung tâm giải thưởng":
                 return moviesArray
                     .filter(movie => movie.ratings && movie.ratings.length > 0)
                     .sort((a, b) => {
@@ -233,12 +233,12 @@ const MenuResultsPage = () => {
                     })
                     .slice(0, 15)
                     .map(movie => formatMovie(movie));
-            case "Festival Central":
+            case "Trung tâm liên hoan":
                 return moviesArray
                     .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
                     .slice(0, 15)
                     .map(movie => formatMovie(movie));
-            case "All Events":
+            case "Tất cả sự kiện":
                 return moviesArray
                     .slice(0, 20)
                     .map(movie => formatMovie(movie));
@@ -250,7 +250,6 @@ const MenuResultsPage = () => {
     };
 
     const handleCelebs = (moviesArray, query) => {
-        // Thu thập tất cả diễn viên từ moviesArray
         let allActors = [];
         moviesArray.forEach(movie => {
             if (movie.actors && Array.isArray(movie.actors)) {
@@ -258,20 +257,15 @@ const MenuResultsPage = () => {
             }
         });
 
-        // Loại bỏ trùng lặp dựa trên _id hoặc name
         const uniqueActors = Array.from(new Map(allActors.map(actor => [actor._id || actor.name, actor])).values());
 
         switch (query) {
-            case "Born Today":
-                // Giả lập: Lấy diễn viên có ngày sinh gần với hôm nay (March 22, 2025)
-                // Vì không có birthDate, lấy ngẫu nhiên 10 người
+            case "Sinh ngày hôm nay":
                 return uniqueActors
                     .sort(() => 0.5 - Math.random())
                     .slice(0, 10)
                     .map(actor => formatActor(actor));
-
-            case "Most Popular Celebs":
-                // Giả lập: Lấy diễn viên xuất hiện nhiều nhất trong moviesArray
+            case "Người nổi tiếng phổ biến nhất":
                 const actorCount = {};
                 allActors.forEach(actor => {
                     actorCount[actor._id || actor.name] = (actorCount[actor._id || actor.name] || 0) + 1;
@@ -280,14 +274,11 @@ const MenuResultsPage = () => {
                     .sort((a, b) => (actorCount[b._id || b.name] || 0) - (actorCount[a._id || a.name] || 0))
                     .slice(0, 10)
                     .map(actor => formatActor(actor));
-
-            case "Celebrity News":
-                // Giả lập: Lấy 5 diễn viên ngẫu nhiên
+            case "Tin tức người nổi tiếng":
                 return uniqueActors
                     .sort(() => 0.5 - Math.random())
                     .slice(0, 5)
                     .map(actor => formatActor(actor));
-
             default:
                 return uniqueActors
                     .filter(actor => actor.name.toLowerCase().includes(query.toLowerCase()))
@@ -296,26 +287,22 @@ const MenuResultsPage = () => {
     };
 
     const handleCommunity = (moviesArray, query) => {
-        // Giả lập dữ liệu cộng đồng vì không có API riêng
         switch (query) {
-            case "Help Center":
+            case "Trung tâm trợ giúp":
                 return [
                     { id: "help1", title: "Hướng dẫn sử dụng IMDb", description: "Tìm hiểu cách sử dụng các tính năng của IMDb." },
                     { id: "help2", title: "Liên hệ hỗ trợ", description: "Gửi câu hỏi cho đội ngũ hỗ trợ của chúng tôi." }
                 ].map(item => formatCommunity(item));
-
-            case "Contributor Zone":
+            case "Khu vực đóng góp":
                 return [
                     { id: "contrib1", title: "Đóng góp nội dung", description: "Thêm thông tin phim hoặc diễn viên." },
                     { id: "contrib2", title: "Xếp hạng phim", description: "Đánh giá phim yêu thích của bạn." }
                 ].map(item => formatCommunity(item));
-
-            case "Polls":
+            case "Thăm dò ý kiến":
                 return [
                     { id: "poll1", title: "Phim hay nhất 2025", description: "Bình chọn cho phim bạn yêu thích nhất năm nay." },
                     { id: "poll2", title: "Diễn viên xuất sắc", description: "Ai là diễn viên nổi bật nhất?" }
                 ].map(item => formatCommunity(item));
-
             default:
                 return moviesArray
                     .filter(movie => movie.title.toLowerCase().includes(query.toLowerCase()))
@@ -350,20 +337,20 @@ const MenuResultsPage = () => {
             <Navbar />
             <div className="p-6 mt-24 px-24 justify-center items-center">
                 <h1 className="text-5xl font-bold mb-4">
-                    {type && query ? `${type.charAt(0).toUpperCase() + type.slice(1)} - ${query}` : "Menu Results"}
+                    {type && query ? `${type.charAt(0).toUpperCase() + type.slice(1)} - ${query}` : "Kết quả Menu"}
                 </h1>
 
                 <section>
                     <h2 className="text-xl font-semibold mb-2 mt-24">
-                        {type === "tvshows" ? "TV Shows" :
-                         type === "watch" ? "Watch" :
-                         type === "awards" ? "Awards & Events" :
-                         type === "celebs" ? "Celebs" :
-                         type === "community" ? "Community" : "Movies"}
+                        {type === "chươngtrìnhtv" ? "Chương trình TV" :
+                         type === "xem" ? "Xem" :
+                         type === "giảithưởng&sựkiện" ? "Giải thưởng & Sự kiện" :
+                         type === "ngườinổitiếng" ? "Người nổi tiếng" :
+                         type === "cộngđồng" ? "Cộng đồng" : "Phim"}
                     </h2>
                     <div className="bg-gray-100 p-4 rounded">
                         {loading ? (
-                            <p>Loading...</p>
+                            <p>Đang tải...</p>
                         ) : error ? (
                             <p className="text-red-500">{error}</p>
                         ) : items.length > 0 ? (
@@ -371,10 +358,10 @@ const MenuResultsPage = () => {
                                 {items.map((item) => (
                                     <a
                                         key={item.id}
-                                        href={type === "celebs" ? `/actor/${item.id}` : type === "community" ? `#${item.id}` : `/movie/${item.id}`}
+                                        href={type === "ngườinổitiếng" ? `/actor/${item.id}` : type === "cộngđồng" ? `#${item.id}` : `/movie/${item.id}`}
                                         className="flex items-center mb-2 border-b border-gray-300 pb-2 last:border-b-0 hover:bg-gray-200 p-2 rounded-md transition"
                                     >
-                                        {type !== "community" && (
+                                        {type !== "cộngđồng" && (
                                             <img
                                                 src={item.image}
                                                 alt={item.title || item.name}
@@ -389,7 +376,7 @@ const MenuResultsPage = () => {
                                             {item.trailer && (
                                                 <p>
                                                     <a href={item.trailer} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                                                        Watch Trailer
+                                                        Xem Trailer
                                                     </a>
                                                 </p>
                                             )}
@@ -398,11 +385,11 @@ const MenuResultsPage = () => {
                                 ))}
                             </>
                         ) : (
-                            <p>No {type === "tvshows" ? "TV Shows" : 
-                                    type === "watch" ? "watch items" : 
-                                    type === "awards" ? "awards or events" : 
-                                    type === "celebs" ? "celebs" : 
-                                    type === "community" ? "community items" : "movies"} found.</p>
+                            <p>Không tìm thấy {type === "chươngtrìnhtv" ? "chương trình TV" : 
+                                             type === "xem" ? "nội dung xem" : 
+                                             type === "giảithưởng&sựkiện" ? "giải thưởng hoặc sự kiện" : 
+                                             type === "ngườinổitiếng" ? "người nổi tiếng" : 
+                                             type === "cộngđồng" ? "nội dung cộng đồng" : "phim"}.</p>
                         )}
                     </div>
                 </section>

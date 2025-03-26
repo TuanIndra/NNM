@@ -1,68 +1,72 @@
 import React from "react";
 import { FaTimes, FaFilm, FaTv, FaAward, FaUserFriends, FaGlobe } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom"; // Thêm Link
+import { Link } from "react-router-dom";
 
 const menuItems = [
     {
-        title: "Movies",
+        title: "Phim",
         icon: <FaFilm className="text-yellow-400 mr-2" />,
         links: [
-            "Release Calendar",
-            "Top 250 Movies",
-            "Most Popular Movies",
-            "Browse Movies by Genre",
-            "Top Box Office",
-            "Showtimes & Tickets",
-            "Movie News",
-            "India Movie Spotlight",
+            "Lịch phát hành",
+            "Top 250 phim",
+            "Phim phổ biến nhất",
+            "Duyệt phim theo thể loại",
+            "Doanh thu phòng vé cao nhất",
+            "Lịch chiếu & Vé",
+            "Tin tức phim",
+            "Tiêu điểm phim Ấn Độ",
         ],
     },
     {
-        title: "TV Shows",
+        title: "Chương trình TV",
         icon: <FaTv className="text-yellow-400 mr-2" />,
         links: [
-            "What's on TV & Streaming",
-            "Top 250 TV Shows",
-            "Most Popular TV Shows",
-            "Browse TV Shows by Genre",
-            "TV News",
+            "Có gì trên TV & Streaming",
+            "Top 250 chương trình TV",
+            "Chương trình TV phổ biến nhất",
+            "Duyệt chương trình TV theo thể loại",
+            "Tin tức TV",
         ],
     },
     {
-        title: "Watch",
+        title: "Xem",
         icon: <FaFilm className="text-yellow-400 mr-2" />,
         links: [
-            "What to Watch",
-            "Latest Trailers",
-            "IMDb Originals",
-            "IMDb Picks",
-            "IMDb Spotlight",
-            "IMDb Podcasts",
+            "Xem gì",
+            "Trailer mới nhất",
         ],
     },
     {
-        title: "Awards & Events",
+        title: "Giải thưởng & Sự kiện",
         icon: <FaAward className="text-yellow-400 mr-2" />,
         links: [
             "Oscars",
-            "SXSW Film Festival",
-            "Women's History Month",
-            "STARmeter Awards",
-            "Awards Central",
-            "Festival Central",
-            "All Events",
+            "Liên hoan phim SXSW",
+            "Tháng lịch sử phụ nữ",
+            "Giải thưởng STARmeter",
+            "Trung tâm giải thưởng",
+            "Trung tâm liên hoan",
+            "Tất cả sự kiện",
         ],
     },
     {
-        title: "Celebs",
+        title: "Người nổi tiếng",
         icon: <FaUserFriends className="text-yellow-400 mr-2" />,
-        links: ["Born Today", "Most Popular Celebs", "Celebrity News"],
+        links: [
+            "Sinh ngày hôm nay",
+            "Người nổi tiếng phổ biến nhất",
+            "Tin tức người nổi tiếng",
+        ],
     },
     {
-        title: "Community",
+        title: "Cộng đồng",
         icon: <FaGlobe className="text-yellow-400 mr-2" />,
-        links: ["Help Center", "Contributor Zone", "Polls"],
+        links: [
+            "Trung tâm trợ giúp",
+            "Khu vực đóng góp",
+            "Thăm dò ý kiến",
+        ],
     },
 ];
 
@@ -98,7 +102,7 @@ const MenuComponent = ({ onClose }) => {
                                 <li key={i} className="text-gray-300 hover:text-white cursor-pointer">
                                     <Link
                                         to={`/menu-results?type=${encodeURIComponent(section.title.toLowerCase().replace(" ", ""))}&query=${encodeURIComponent(link)}`}
-                                        onClick={onClose} // Đóng menu khi nhấn
+                                        onClick={onClose}
                                     >
                                         {link}
                                     </Link>

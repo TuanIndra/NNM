@@ -40,45 +40,6 @@ const Navbar = () => {
                   >
                     <CiMenuBurger className="text-white mr-2 h-4.5 w-4.5" /> Menu
                   </button>
-
-                  {/* Dropdown Categories */}
-                  <div className="relative">
-                    <button
-                      onClick={() => setDropdownOpen(!dropdownOpen)}
-                      className="px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-700 hover:text-white"
-                    >
-                      Categories
-                      <svg
-                        className="ml-2 -mr-0.5 h-4 w-4 inline-block"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M19 9l-7 7-7-7"
-                        />
-                      </svg>
-                    </button>
-                    {dropdownOpen && (
-                      <div className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                        <div className="py-1">
-                          <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            Phim
-                          </a>
-                          <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            Show truyền hình
-                          </a>
-                          <a href="#" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            Giải thưởng và sự kiện
-                          </a>
-                        </div>
-                      </div>
-                    )}
-                  </div>
                 </div>
               </div>
             </div>
