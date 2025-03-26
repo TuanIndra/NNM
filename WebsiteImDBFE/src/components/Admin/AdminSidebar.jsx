@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { FaFilm, FaUsers, FaStar, FaChartBar, FaBars, FaCog, FaTheaterMasks, FaVideo } from "react-icons/fa";
+import { FaFilm, FaUsers, FaChartBar, FaBars, FaCog, FaTheaterMasks, FaVideo } from "react-icons/fa";
 import logo from '../../assets/logo.png';
 
 const AdminSidebar = () => {
@@ -49,12 +49,6 @@ const AdminSidebar = () => {
                         <Link to="/admin/actors" className="flex items-center w-full text-white hover:text-yellow-400">
                             <FaTheaterMasks className="mr-2 text-yellow-400" />
                             {!isCollapsed && <span>Quản lý Diễn viên</span>}
-                        </Link>
-                    </li>
-                    <li className="mb-4 flex items-center hover:bg-gray-800 p-2 rounded">
-                        <Link to="/admin/reviews" className="flex items-center w-full text-white hover:text-yellow-400">
-                            <FaStar className="mr-2 text-yellow-400" />
-                            {!isCollapsed && <span>Quản lý Đánh giá</span>}
                         </Link>
                     </li>
                     <li className="mb-4 flex items-center hover:bg-gray-800 p-2 rounded">

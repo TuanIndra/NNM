@@ -18,9 +18,9 @@ const Footer = () => {
 
             {/* Social Media & QR Code */}
             <div className="flex justify-center space-x-8 mb-6 mt-6">
-                {/* Follow IMDb */}
+                {/* Follow We Website */}
                 <div className="border border-gray-600 rounded-lg px-6 py-3 flex items-center space-x-4">
-                    <span className="text-gray-300 text-sm">Follow IMDb on social</span>
+                    <span className="text-gray-300 text-sm">Follow We Website on social</span>
                     <FaTiktok className="text-white text-xl hover:text-gray-400 cursor-pointer" />
                     <FaInstagram className="text-white text-xl hover:text-gray-400 cursor-pointer" />
                     <FaXTwitter className="text-white text-xl hover:text-gray-400 cursor-pointer" />
@@ -30,15 +30,8 @@ const Footer = () => {
 
                 {/* QR Code */}
                 <div className="border border-gray-600 rounded-lg px-6 py-3">
-                    <span className="text-gray-300 text-sm block">Get the IMDb app</span>
+                    <span className="text-gray-300 text-sm block">Get the We Website app</span>
                     <span className="text-gray-500 text-xs">For Android and iOS</span>
-                    <div className="mt-2">
-                        <img
-                            src="https://via.placeholder.com/50" // Thay bằng QR Code thật
-                            alt="QR Code"
-                            className="w-12 mx-auto"
-                        />
-                    </div>
                 </div>
             </div>
 
@@ -46,9 +39,9 @@ const Footer = () => {
             <div className="flex flex-wrap justify-center space-x-4 text-gray-400 text-sm mb-5">
                 <a href="#" className="hover:underline">Help</a>
                 <a href="#" className="hover:underline">Site Index</a>
-                <a href="#" className="hover:underline">IMDbPro</a>
+                <a href="#" className="hover:underline">We Website Pro</a>
                 <a href="#" className="hover:underline">Box Office Mojo</a>
-                <a href="#" className="hover:underline">License IMDb Data</a>
+                <a href="#" className="hover:underline">License We Website Data</a>
                 <a href="#" className="hover:underline">Press Room</a>
                 <a href="#" className="hover:underline">Advertising</a>
                 <a href="#" className="hover:underline">Jobs</a>
@@ -62,7 +55,7 @@ const Footer = () => {
             </p>
 
             {/* Copyright */}
-            <p className="text-gray-500 text-xs mt-2">© 1990-2025 by IMDb.com, Inc.</p>
+            <p className="text-gray-500 text-xs mt-2">© 1990-2025 by We Website, Inc.</p>
         </footer>
     );
 };
