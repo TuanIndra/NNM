@@ -88,7 +88,13 @@ exports.getMoviesInWatchlist = async (req, res) => {
         const { watchlistId } = req.params;
 
         const watchlist = await Watchlist.findById(watchlistId)
-            .populate("movies", "title poster genre");
+            .populate({
+                path: 'movies',
+                populate: [
+                    { path: 'genre', select: 'name' },
+                    { path: 'actors', select: 'name' }
+                ]
+            });
 
         if (!watchlist) {
             return res.status(404).json({ message: "Watchlist không tồn tại" });
@@ -121,3 +127,4 @@ exports.deleteWatchlist = async (req, res) => {
         res.status(500).json({ message: err.message });
     }
 };
+

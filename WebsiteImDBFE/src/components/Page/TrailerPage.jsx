@@ -21,22 +21,16 @@ const TrailerPage = () => {
     const storedUser = localStorage.getItem("user");
     const user = storedUser ? JSON.parse(storedUser) : null;
 
-    console.log("🔹 Kiểm tra user từ localStorage:", user);
-    console.log("🔹 User ID:", user?._id);
-    console.log("🔹 Token từ localStorage:", token);
-
     useEffect(() => {
         const fetchData = async () => {
             try {
-                // Fetch chi tiết phim hiện tại
-                console.log("Fetching movie with ID:", id);
+                // Fetch chi tiết phim hiện tại     
                 const movieResponse = await fetch(`http://localhost:5000/api/movies/${id}`, {
                     headers: token ? { Authorization: `Bearer ${token}` } : {},
                 });
                 if (!movieResponse.ok) throw new Error('Không thể tải dữ liệu phim');
                 const movieData = await movieResponse.json();
-                console.log("Fetched movie data:", movieData);
-
+        
                 setMovie(movieData);
                 if (user) {
                     const existingRating = movieData.ratings.find(r => r.userId === user._id);
@@ -47,7 +41,7 @@ const TrailerPage = () => {
                 const featuredResponse = await fetch("http://localhost:5000/api/movies?page=1&limit=10");
                 if (!featuredResponse.ok) throw new Error('Không thể tải danh sách phim nổi bật');
                 const featuredData = await featuredResponse.json();
-                console.log("Fetched featured movies:", featuredData.movies);
+                
                 setFeaturedMovies(featuredData.movies); // Lưu danh sách phim vào state
             } catch (err) {
                 console.error("Lỗi khi fetch dữ liệu:", err);
@@ -65,8 +59,6 @@ const TrailerPage = () => {
             toast.error('Vui lòng đăng nhập để đánh giá!');
             return navigate('/login');
         }
-        
-        console.log("User ID:", user?._id, "Movie ID:", id, "Rating:", rating);
 
         try {
             const response = await fetch(`http://localhost:5000/api/movies/${id}/rate`, {
@@ -80,9 +72,6 @@ const TrailerPage = () => {
 
             if (!response.ok) throw new Error('Không thể gửi đánh giá');
             const updatedMovie = await response.json();
-            
-            console.log("Updated movie data after rating:", updatedMovie);
-
             setMovie(updatedMovie);
             setUserRating(rating);
             toast.success('Đánh giá thành công!');
@@ -114,13 +103,17 @@ const TrailerPage = () => {
                         >
                             Quay lại
                         </button>
-                        <iframe
-                            className="w-full h-[460px] max-w-4xl rounded-lg shadow-lg"
-                            src={`https://www.youtube.com/embed/${new URL(movie.trailer).pathname.slice(1)}?autoplay=1&mute=1`}
-                            title={movie.title}
-                            allow="autoplay; encrypted-media"
-                            allowFullScreen
-                        ></iframe>
+                        {movie.trailer ? (
+                            <iframe
+                                className="w-full h-[460px] max-w-4xl rounded-lg shadow-lg"
+                                src={`https://www.youtube.com/embed/${movie.trailer.split('v=')[1]}?autoplay=1&mute=1`}
+                                title={movie.title}
+                                allow="autoplay; encrypted-media"
+                                allowFullScreen
+                            ></iframe>
+                        ) : (
+                            <p className="text-white text-lg">Hiện tại chưa có trailer cho phim này.</p>
+                        )}
                     </div>
 
                     <div className="w-[30%] bg-[#121212] p-4 rounded-lg shadow-lg flex flex-col">

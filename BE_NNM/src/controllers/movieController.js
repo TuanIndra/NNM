@@ -201,11 +201,13 @@ exports.getMoviesCount = async (req, res) => {
 exports.rateMovie = async (req, res) => {
     const { id } = req.params;
     const { rating } = req.body;
-    const userId = req.user.userId; // Lấy userId từ token qua authMiddleware
+    const userId = req.user.userId;
 
     try {
         console.log("Rating request:", { id, userId, rating });
-        const movie = await Movie.findById(id);
+        const movie = await Movie.findById(id)
+            .populate('genre', 'name') // Populate tên thể loại
+            .populate('actors', 'name'); // Populate tên diễn viên;
         if (!movie) return res.status(404).json({ message: 'Phim không tồn tại' });
 
         if (!Number.isInteger(rating) || rating < 1 || rating > 10) {
@@ -219,7 +221,13 @@ exports.rateMovie = async (req, res) => {
             movie.ratings.push({ userId, rating });
         }
 
-        const updatedMovie = await movie.save();
+        const updatedMovie = await movie.save()
+        
+        // Populate lại genre và actors trước khi trả về
+        const populatedMovie = await Movie.findById(updatedMovie._id)
+            .populate('genre', 'name')
+            .populate('actors', 'name');
+            
         res.status(200).json(updatedMovie);
     } catch (error) {
         console.error("Error rating movie:", error.stack);

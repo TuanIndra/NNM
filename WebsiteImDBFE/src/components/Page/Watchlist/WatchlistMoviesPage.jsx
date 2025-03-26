@@ -1,4 +1,3 @@
-// src/pages/WatchlistMoviesPage.jsx
 import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import Navbar from "../../Navbar/Navbar";
@@ -62,6 +61,7 @@ const WatchlistMoviesPage = () => {
             const data = await response.json();
             if (response.ok) {
                 setMovies(movies.filter(movie => movie._id !== movieId));
+                toast.success("Đã xóa phim khỏi watchlist!", { position: "top-center" });
             } else {
                 if (data.message === "Token has expired" || data.message === "Invalid Token") {
                     // Không cần xử lý, AuthProvider sẽ tự động đăng xuất
@@ -72,6 +72,10 @@ const WatchlistMoviesPage = () => {
         } catch (error) {
             toast.error("Lỗi kết nối server!", { position: "top-center" });
         }
+    };
+
+    const handleMovieClick = (movieId) => {
+        navigate(`/movie/${movieId}`);
     };
 
     if (loading) return <p className="text-white">Đang tải...</p>;
@@ -97,23 +101,48 @@ const WatchlistMoviesPage = () => {
                     ) : (
                         <ul className="mt-6 space-y-6">
                             {movies.map((movie) => (
-                                <li key={movie._id} className="bg-gray-800 p-4 rounded-lg flex items-center">
-                                    <img src={movie.poster} alt={movie.title} className="w-24 h-36 object-cover rounded-lg" />
+                                <li
+                                    key={movie._id}
+                                    className="bg-gray-800 p-4 rounded-lg flex items-start hover:bg-gray-700 cursor-pointer transition-colors"
+                                    onClick={() => handleMovieClick(movie._id)}
+                                >
+                                    <img
+                                        src={movie.poster}
+                                        alt={movie.title}
+                                        className="w-24 h-36 object-cover rounded-lg"
+                                    />
                                     <div className="ml-4 flex-grow">
                                         <h2 className="text-xl font-semibold">{movie.title}</h2>
-                                        <p className="text-gray-400">{movie.releaseYear} • {movie.genre}</p>
+                                        <p className="text-gray-400 mt-1">
+                                            <strong>Năm phát hành:</strong> {movie.releaseYear || "Không rõ"}
+                                        </p>
+                                        <p className="text-gray-400 mt-1">
+                                            <strong>Thể loại:</strong>{" "}
+                                            {movie.genre?.map(g => g.name).join(", ") || "Không có thể loại"}
+                                        </p>
+                                        <p className="text-gray-400 mt-1">
+                                            <strong>Đạo diễn:</strong> {movie.director || "Không rõ"}
+                                        </p>
+                                        <p className="text-gray-400 mt-1 line-clamp-2">
+                                            <strong>Mô tả:</strong> {movie.description || "Không có mô tả"}
+                                        </p>
                                         {movie.ratings && movie.ratings.length > 0 && (
                                             <p className="text-yellow-400 mt-1">
-                                                ⭐ {(
+                                                ⭐{" "}
+                                                {(
                                                     movie.ratings.reduce((acc, curr) => acc + curr.rating, 0) /
                                                     movie.ratings.length
-                                                ).toFixed(1)} ({movie.ratings.length} votes)
+                                                ).toFixed(1)}{" "}
+                                                ({movie.ratings.length} lượt)
                                             </p>
                                         )}
                                     </div>
                                     <button
                                         className="ml-auto bg-red-500 px-3 py-1 rounded-lg hover:bg-red-600"
-                                        onClick={() => removeMovieFromWatchlist(movie._id)}
+                                        onClick={(e) => {
+                                            e.stopPropagation(); // Ngăn click trên nút xóa kích hoạt chuyển hướng
+                                            removeMovieFromWatchlist(movie._id);
+                                        }}
                                     >
                                         ❌ Xóa
                                     </button>

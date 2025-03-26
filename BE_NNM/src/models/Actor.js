@@ -5,6 +5,7 @@ if (mongoose.models.Actor) {
 }
 
 const ActorSchema = new mongoose.Schema({
+    tmdbId: { type: Number, unique: true },
     name: { type: String, required: true },
     birthDate: { type: Date },
     birthPlace: { type: String, default: "" },

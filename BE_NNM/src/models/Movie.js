@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const MovieSchema = new mongoose.Schema({
+    tmdbId: { type: Number, unique: true },
     title: { type: String, required: true, trim: true },
     description: { type: String, required: true, trim: true },
     releaseYear: { type: Number, required: true, min: 1900, max: new Date().getFullYear() },
