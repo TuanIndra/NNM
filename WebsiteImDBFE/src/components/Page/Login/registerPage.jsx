@@ -1,5 +1,8 @@
 import { useState } from "react";
-import Navbar from '../Navbar/Navbar'
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Navbar from "../../Navbar/Navbar";
+
 export default function RegisterForm() {
   const [formData, setFormData] = useState({
     name: "",
@@ -16,12 +19,12 @@ export default function RegisterForm() {
     e.preventDefault();
 
     if (formData.password.length < 6) {
-      alert("Mật khẩu phải có ít nhất 6 ký tự.");
+      toast.error("Mật khẩu phải có ít nhất 6 ký tự.", { position: "top-center" });
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      alert("Mật khẩu nhập lại không khớp.");
+      toast.error("Mật khẩu nhập lại không khớp.", { position: "top-center" });
       return;
     }
 
@@ -39,20 +42,22 @@ export default function RegisterForm() {
       const data = await response.json();
 
       if (response.ok) {
-        alert("Đăng ký thành công!");
-        window.location.href = "/login"; // Chuyển về trang đăng nhập
+        toast.success("Đăng ký thành công! Chuyển hướng đến trang đăng nhập...", { position: "top-center" });
+        setTimeout(() => {
+          window.location.href = "/login"; 
+        }, 2000);
       } else {
-        alert(data.message || "Đăng ký thất bại.");
+        toast.error(data.message || "Đăng ký thất bại.", { position: "top-center" });
       }
     } catch (err) {
       console.error("Lỗi:", err);
-      alert("Đã xảy ra lỗi khi kết nối với server.");
+      toast.error("Đã xảy ra lỗi khi kết nối với server.", { position: "top-center" });
     }
   };
 
   return (
     <div>
-      <Navbar/>
+      <Navbar />
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <div className="bg-white p-8 rounded-lg shadow-md w-96">
           <h2 className="text-2xl font-bold text-center mb-6">Đăng ký</h2>
@@ -110,9 +115,9 @@ export default function RegisterForm() {
             </button>
           </form>
           <p className="text-sm text-center mt-4">
-              Bạn đã có tài khoản?{" "}
-              <a href="/login" className="text-yellow-500 hover:underline">Đăng nhập</a>
-            </p>
+            Bạn đã có tài khoản?{" "}
+            <a href="/login" className="text-yellow-500 hover:underline">Đăng nhập</a>
+          </p>
         </div>
       </div>
     </div>
